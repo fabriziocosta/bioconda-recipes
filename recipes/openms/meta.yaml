@@ -7,7 +7,7 @@ package:
 source:
   fn: OpenMS-{{ version }}_src_contrib_doc.tar.gz
   url: https://github.com/OpenMS/OpenMS/releases/download/Release{{ version }}/OpenMS-{{ version }}_src_contrib_doc.tar.gz
-       
+
 build:
     number: 0
     skip: True  # [osx]
