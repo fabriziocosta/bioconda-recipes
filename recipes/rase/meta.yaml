@@ -1,0 +1,30 @@
+about:
+    home: 'https://github.com/fabriziocosta/RaSE-RNA-Structural-Stability-Estimator'
+    summary: "RaSE is a python program that uses the graph vectorization technique of EDeN to compute a score indicative of the structural stability responsibility of each nucleotide in an RNA sequence."
+package:
+  name: rase
+  version: 1.2.0
+build:
+  number: 0
+  skip: True # [not py27]
+source:
+  fn: v.1.2.zip
+  md5: a5e43c3e292193e831796c27ded93038
+  url: https://github.com/fabriziocosta/RaSE-RNA-Structural-Stability-Estimator/archive/v.1.2.zip
+requirements:
+  run:
+      - python
+      - eden
+      - dill ==0.2.4
+      - docopt ==0.6.2
+      - futures ==3.0.5
+      - joblib ==0.9.4
+      - networkx ==1.10
+      - numpy ==1.11.0
+      - pydot ==1.0.28
+      - scikit-learn ==0.18
+      - scipy ==0.17.0
+      - toolz ==0.8.0
+test:
+  commands:
+      - RaSE.py -h
