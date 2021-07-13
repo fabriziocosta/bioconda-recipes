@@ -1,0 +1,39 @@
+{% set name = "smof" %}
+{% set version = "2.22.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: "231bea3489ebf6ac3a51d25622f953f4c31db3120f1af3d352e628bc711bd20c"
+
+build:
+  noarch: python
+  number: 0
+  entry_points:
+    - smof=smof.ui:main
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
+
+requirements:
+  host:
+    - pip
+    - python >=3
+  run:
+    - python >=3
+
+test:
+  imports:
+    - smof
+  commands:
+    - smof --help
+
+about:
+  home: "https://github.com/incertae-sedis/smof"
+  license: "MIT"
+  summary: "UNIX-style utilities for FASTA file exploration"
+  
+extra:
+  recipe-maintainers:
+   - arendsee

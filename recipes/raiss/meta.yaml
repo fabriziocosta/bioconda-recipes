@@ -1,0 +1,38 @@
+{% set name = "raiss" %}
+{% set version = "3.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://gitlab.pasteur.fr/statistical-genetics/{{ name }}/-/archive/{{ version  }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b9ba1ee9a10b196b9d3504f046abc6577c7a7d88e5964a0477456e5bf442d0c9
+
+build:
+  noarch: python
+  entry_points:
+    - raiss=raiss.__main__:main
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - scipy
+    - pandas
+    - joblib
+
+test:
+  commands:
+    - raiss --help
+
+about:
+  home: http://statistical-genetics.pages.pasteur.fr/raiss/
+  license: MIT
+  license_file: LICENSE
+  summary: 'SNP summary statistics imputation package'
+  license_family: MIT

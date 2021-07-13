@@ -1,12 +1,13 @@
 #!/bin/bash
-
+mkdir -p "$PREFIX/bin"
 export MACHTYPE=x86_64
 export BINDIR=$(pwd)/bin
-mkdir -p $BINDIR
+export L="${LDFLAGS}"
+mkdir -p "$BINDIR"
 (cd kent/src/lib && make)
+(cd kent/src/htslib && make)
 (cd kent/src/jkOwnLib && make)
 (cd kent/src/hg/lib && make)
 (cd kent/src/utils/pslPosTarget && make)
-mkdir -p $PREFIX/bin
-cp bin/pslPosTarget $PREFIX/bin
-chmod +x $PREFIX/bin/pslPosTarget
+cp bin/pslPosTarget "$PREFIX/bin"
+chmod +x "$PREFIX/bin/pslPosTarget"

@@ -1,0 +1,38 @@
+{% set name = "pyrle" %}
+{% set version = "0.0.33" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4c24a2e096f8dbfa4451d57ce769057e2ed6c369ee75f5dce3c4d6fa47f71a6e
+
+build:
+  number: 0
+  skip: True  # [not py3k]
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - setuptools
+    - cython
+  run:
+    - python
+    - pandas
+    - tabulate
+    - numpy
+    - natsort
+
+test:
+  imports:
+    - pyrle
+
+about:
+  home: https://github.com/endrebak/pyrle
+  license: MIT
+  summary: Genomic Rle-objects for Python

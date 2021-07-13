@@ -1,75 +1,96 @@
+{% set version = "1.18.0" %}
+{% set name = "RCAS" %}
+{% set bioc = "3.13" %}
+
 package:
-  name: bioconductor-rcas
-  version: "1.0.0"
-
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
 source:
-  fn: RCAS_1.0.0.tar.gz
-  url: https://bioconductor.org/packages/release/bioc/src/contrib/RCAS_1.0.0.tar.gz
-  md5: a79cb324fc6780b823801494800721f2
-
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: b61db623dadb9092911793d350f7364c
 build:
-  skip: True  # [osx]
   number: 0
   rpaths:
     - lib/R/lib/
     - lib/
-
-# Suggests: BSgenome.Mmusculus.UCSC.mm9, BSgenome.Celegans.UCSC.ce10,
-# BSgenome.Dmelanogaster.UCSC.dm3, org.Mm.eg.db, org.Ce.eg.db, org.Dm.eg.db,
-# testthat
+  noarch: generic
+# Suggests: testthat, covr
+# SystemRequirements: pandoc (>= 1.12.3)
 requirements:
-  build:
-    - r #>=3.3.0
-    - bioconductor-biomart
-    - bioconductor-topgo
-    - bioconductor-genomicfeatures
-    - bioconductor-genomation >=1.5.5
-    - bioconductor-rtracklayer
-    - bioconductor-annotationdbi
-    - bioconductor-genomicranges
-    - bioconductor-bsgenome.hsapiens.ucsc.hg19
-    - bioconductor-org.hs.eg.db
-    - bioconductor-genomeinfodb
-    - bioconductor-biostrings
-    - bioconductor-motifrg
-    - bioconductor-biocgenerics
-    - bioconductor-s4vectors
-    - r-rmarkdown >=0.9.5
-    - r-plotly >=4.5.2
-    - r-dt >=0.2
+  host:
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biostrings >=2.60.0,<2.61.0'
+    - 'bioconductor-bsgenome >=1.60.0,<1.61.0'
+    - 'bioconductor-bsgenome.hsapiens.ucsc.hg19 >=1.4.0,<1.5.0'
+    - 'bioconductor-genomation >=1.24.0,<1.25.0'
+    - 'bioconductor-genomeinfodb >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicfeatures >=1.44.0,<1.45.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rtracklayer >=1.52.0,<1.53.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - r-base
+    - r-cowplot
     - r-data.table
-    - pandoc >=1.12.3
-    - r-knitr >=1.12.3
+    - 'r-dt >=0.2'
+    - r-ggplot2
+    - r-ggseqlogo
+    - r-gprofiler2
+    - 'r-knitr >=1.12.3'
+    - r-pbapply
+    - r-pheatmap
+    - 'r-plotly >=4.5.2'
+    - r-plotrix
+    - r-proxy
+    - r-ranger
+    - 'r-rmarkdown >=0.9.5'
+    - r-rsqlite
+    - 'pandoc >=1.12.3'
   run:
-    - r #>=3.3.0
-    - bioconductor-biomart
-    - bioconductor-topgo
-    - bioconductor-genomicfeatures
-    - bioconductor-genomation >=1.5.5
-    - bioconductor-rtracklayer
-    - bioconductor-annotationdbi
-    - bioconductor-genomicranges
-    - bioconductor-bsgenome.hsapiens.ucsc.hg19
-    - bioconductor-org.hs.eg.db
-    - bioconductor-genomeinfodb
-    - bioconductor-biostrings
-    - bioconductor-motifrg
-    - bioconductor-biocgenerics
-    - bioconductor-s4vectors
-    - r-rmarkdown >=0.9.5
-    - r-plotly >=4.5.2
-    - r-dt >=0.2
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biostrings >=2.60.0,<2.61.0'
+    - 'bioconductor-bsgenome >=1.60.0,<1.61.0'
+    - 'bioconductor-bsgenome.hsapiens.ucsc.hg19 >=1.4.0,<1.5.0'
+    - 'bioconductor-genomation >=1.24.0,<1.25.0'
+    - 'bioconductor-genomeinfodb >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicfeatures >=1.44.0,<1.45.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rtracklayer >=1.52.0,<1.53.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - r-base
+    - r-cowplot
     - r-data.table
-    - pandoc >=1.12.3
-    - r-knitr >=1.12.3
-
+    - 'r-dt >=0.2'
+    - r-ggplot2
+    - r-ggseqlogo
+    - r-gprofiler2
+    - 'r-knitr >=1.12.3'
+    - r-pbapply
+    - r-pheatmap
+    - 'r-plotly >=4.5.2'
+    - r-plotrix
+    - r-proxy
+    - r-ranger
+    - 'r-rmarkdown >=0.9.5'
+    - r-rsqlite
+    - 'pandoc >=1.12.3'
 test:
   commands:
-    - $R -e "library('RCAS')"
-
+    - '$R -e "library(''{{ name }}'')"'
 about:
-  home: https://github.com/BIMSBbioinfo/RCAS/tree/rcas_R/rpackage/RCAS
-  license: Artistic-2.0Artistic-2.0
-  summary: 'RNA Centric Annotation System (RCAS) is an automated system
-  that provides dynamic annotations for custom input files
-  that contain transcriptomic targe regions.'
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: Artistic-2.0
+  summary: 'RNA Centric Annotation System'
+  description: 'RCAS is an R/Bioconductor package designed as a generic reporting tool for the functional analysis of transcriptome-wide regions of interest detected by high-throughput experiments. Such transcriptomic regions could be, for instance, signal peaks detected by CLIP-Seq analysis for protein-RNA interaction sites, RNA modification sites (alias the epitranscriptome), CAGE-tag locations, or any other collection of query regions at the level of the transcriptome. RCAS produces in-depth annotation summaries and coverage profiles based on the distribution of the query regions with respect to transcript features (exons, introns, 5''/3'' UTR regions, exon-intron boundaries, promoter regions). Moreover, RCAS can carry out functional enrichment analyses and discriminative motif discovery.'
+extra:
+  identifiers:
+    - biotools:rcas
+  parent_recipe:
+    name: bioconductor-rcas
+    path: recipes/bioconductor-rcas
+    version: 1.6.0
+

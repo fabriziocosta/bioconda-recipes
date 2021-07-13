@@ -1,22 +1,39 @@
+{% set version = "0.8.7" %}
+{% set sha256 = "095e94c9994ae6c110f4acffb55dc1b68fdc9541a24fcbf6954fd12ff7ab6efb" %}
+
 package:
   name: delly
-  version: '0.7.6'
+  version: '{{ version }}'
 
 source:
-  fn: delly_v0.7.6_CentOS5.4_x86_64bit
-  url: https://github.com/tobiasrausch/delly/releases/download/v0.7.6/delly_v0.7.6_CentOS5.4_x86_64bit
-  md5: 8efd63cb83f8f18428bbacf8b1b1945f
+  url: https://github.com/dellytools/delly/archive/v{{ version }}.tar.gz
+  sha256: '{{ sha256 }}'
 
 build:
-  number: 0
-  skip: True # [osx]
-  binary_relocation: False
+  number: 1
+
+requirements:
+  build:
+    - make
+    - {{ compiler('cxx') }}
+  host:
+    - zlib
+    - bzip2
+    - boost-cpp
+    - htslib
+  run:
+    - zlib
+    - bzip2
+    - boost-cpp
+    - htslib
 
 test:
   commands:
-    - delly --help > /dev/null
+    - delly --help
 
 about:
-  home: https://github.com/tobiasrausch/delly
-  license: GPLv3
+  home: https://github.com/dellytools/delly
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
   summary: Structural variant discovery by integrated paired-end and split-read analysis

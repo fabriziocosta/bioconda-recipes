@@ -1,0 +1,57 @@
+{% set version = "1.10.0" %}
+{% set name = "tRNAdbImport" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 7e7286c76a76939ca16203df5d3f4c9e
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: knitr, rmarkdown, testthat, httptest, BiocStyle, rtracklayer
+requirements:
+  host:
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biostrings >=2.60.0,<2.61.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-modstrings >=1.8.0,<1.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-structstrings >=1.8.0,<1.9.0'
+    - 'bioconductor-trna >=1.10.0,<1.11.0'
+    - r-base
+    - r-httr
+    - r-stringr
+    - r-xml2
+  run:
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biostrings >=2.60.0,<2.61.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-modstrings >=1.8.0,<1.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-structstrings >=1.8.0,<1.9.0'
+    - 'bioconductor-trna >=1.10.0,<1.11.0'
+    - r-base
+    - r-httr
+    - r-stringr
+    - r-xml2
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: 'GPL-3 + file LICENSE'
+  summary: 'Importing from tRNAdb and mitotRNAdb as GRanges objects'
+  description: 'tRNAdbImport imports the entries of the tRNAdb and mtRNAdb (http://trna.bioinf.uni-leipzig.de) as GRanges object.'
+  license_file: LICENSE
+

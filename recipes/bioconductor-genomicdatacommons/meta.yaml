@@ -1,0 +1,65 @@
+{% set version = "1.16.0" %}
+{% set name = "GenomicDataCommons" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: a3e66a51579b75e25df9ea96adc2a989
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: BiocStyle, knitr, rmarkdown, DT, testthat, listviewer, ggplot2, GenomicAlignments, Rsamtools
+requirements:
+  host:
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+    - r-dplyr
+    - r-httr
+    - r-jsonlite
+    - r-magrittr
+    - r-rappdirs
+    - r-readr
+    - r-rlang
+    - r-tibble
+    - r-xml2
+  run:
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+    - r-dplyr
+    - r-httr
+    - r-jsonlite
+    - r-magrittr
+    - r-rappdirs
+    - r-readr
+    - r-rlang
+    - r-tibble
+    - r-xml2
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: Artistic-2.0
+  summary: 'NIH / NCI Genomic Data Commons Access'
+  description: 'Programmatically access the NIH / NCI Genomic Data Commons RESTful service.'
+extra:
+  parent_recipe:
+    name: bioconductor-genomicdatacommons
+    path: recipes/bioconductor-genomicdatacommons
+    version: 1.4.3
+

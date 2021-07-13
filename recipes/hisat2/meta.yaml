@@ -1,30 +1,46 @@
-build:
-  number: 1
-
-about:
-    home: 'https://ccb.jhu.edu/software/hisat2/index.shtml'
-    license: GPLv3
-    summary: graph-based alignment of next generation sequencing reads to a population of genomes
+{% set version = "2.2.1" %}
 
 package:
-    name: hisat2
-    version: 2.0.5
-
-requirements:
-    build:
-        - python
-    run:
-        - python
-        - perl-threaded
-test:
-    commands:
-        - hisat2 --version
+  name: hisat2
+  version: {{ version }}
 
 source:
-  fn: hisat2-2.0.5-Linux_x86_64.zip #[linux]
-  url: ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.0.5-Linux_x86_64.zip #[linux]
-  sha256: ca86d448475a7c9f9a2eb8915162ba83db3d1916eff03f431483d7558e4a4e75 #[linux]
+  url: https://github.com/DaehwanKimLab/hisat2/archive/v{{ version }}.tar.gz
+  sha256: f3f4f867d0a6b1f880d64efc19deaa5788c62050e0a4d614ce98b3492f702599
+  patches:
+    - 0001-Rename-VERSION-to-VERSION.txt.patch
 
-  fn: hisat2-2.0.5-OSX_x86_64.zip #[osx]
-  url: ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.0.5-OSX_x86_64.zip #[osx]
-  sha256: 35446d8f07c78ad3c755cb8994570469df1c27d9a88be6d1b9e2eefaf8b3d711 #[osx]
+build:
+  number: 3
+
+requirements:
+  build:
+    - make
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+  run:
+    - python >3.5
+    - perl
+
+test:
+  commands:
+    - hisat2 --help | grep -F {{ version }}
+
+about:
+  home: http://daehwankimlab.github.io/hisat2
+  license: GPL-3.0
+  license_family: GPL
+  license_file: LICENSE
+  summary: "Graph-based alignment of next generation sequencing reads to a population of genomes."
+  description: "HISAT2 is a fast and sensitive alignment program for mapping next-generation sequencing reads (both DNA and RNA) to a population of human genomes as well as to a single reference genome."
+  doc_url: https://daehwankimlab.github.io/hisat2/manual/
+  dev_url: https://github.com/DaehwanKimLab/hisat2
+
+extra:
+  identifiers:
+    - biotools:HISAT2
+    - doi:10.1038/nmeth.3317
+    - doi:10.1038/s41587-019-0201-4
+    - usegalaxy-eu:hisat2
+  notes: "Pre-built indices for HISAT2 can be downloaded from https://daehwankimlab.github.io/hisat2/download/."

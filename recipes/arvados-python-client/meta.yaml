@@ -1,44 +1,38 @@
+{% set version="2.2.0" %}
+
 package:
   name: arvados-python-client
-  version: '0.1.20161031135838'
+  version: {{ version }}
 
 source:
-  fn: arvados-python-client-0.1.20161031135838.tar.gz
-  url: https://pypi.python.org/packages/48/a6/104df9991375666959fed759e0a7abf82beffc56262e03bf1d27e9d835eb/arvados-python-client-0.1.20161031135838.tar.gz
-  md5: e59bb32332703b8d81e1300055bbc6e5
+  url: https://pypi.io/packages/source/a/arvados-python-client/arvados-python-client-{{ version }}.tar.gz
+  sha256: 25daaa1ad047a96fb77bed0e75c32b02e9b9ea0644eb1ca6493322c90c8fb801
 
 build:
+  noarch: python
   number: 0
-  skip: True # [not py27]
 
 requirements:
-  build:
-    - python
+  host:
+    - python >=3
     - setuptools
-    - ciso8601
-    - google-api-python-client
+    - ciso8601 >=2.0.0
+    - future
+    - google-api-python-client <1.7,>=1.6.2
     - httplib2
-    - oauth2client <2,>=1.4.6
-    - pycurl <7.21.5,>=7.19.5.1
-    - python-gflags
-    - requests
-    - rsa
-    - urllib3
-    - ws4py
-
+    - pycurl >=7.19.5.1
+    - ruamel.yaml >=0.15.54
+    - ws4py >=0.4.2
   run:
-    - python
+    - python >=3
     - setuptools
-    - ciso8601
-    - google-api-python-client
+    - ciso8601 >=2.0.0
+    - future
+    - google-api-python-client <1.7,>=1.6.2
     - httplib2
-    - oauth2client <2,>=1.4.6
-    - pycurl <7.21.5,>=7.19.5.1
-    - python-gflags
-    - requests
-    - rsa
-    - urllib3
-    - ws4py
+    - pycurl >=7.19.5.1
+    - ruamel.yaml >=0.15.54
+    - ws4py >=0.4.2
 
 test:
   imports:
@@ -47,4 +41,12 @@ test:
 about:
   home: https://github.com/curoverse/arvados/tree/master/sdk/python
   license: Apache License 2.0
-  summary: Python API for Arvados, an open source platform for managing and analyzing biomedical big data
+  summary: Python API for Arvados
+  description: |
+     Python API for Arvados, an open source platform for managing and
+     analyzing biomedical big data
+
+extra:
+  skip-lints:
+    - uses_setuptools
+    - should_be_noarch_generic  # needs subprocess32 on py2k

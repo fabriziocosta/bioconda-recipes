@@ -1,37 +1,53 @@
-build:
-  number: 2
-  # XXX OSX currently failing due to problem with bundled shared libraries
-  skip: True # [osx]
-  string: boost{{CONDA_BOOST}}_{{PKG_BUILDNUM}}
+{% set version="1.5.1" %}
 
-about:
-    home: https://github.com/COMBINE-lab/salmon
-    license: GPLv3
-    summary: Highly-accurate & wicked fast transcript-level quantification from RNA-seq reads using lightweight alignments
 package:
-    name: salmon
-    version: 0.7.2
+  name: salmon
+  version: {{ version }}
+
+build:
+  number: 0
+
 source:
-  fn: SalmonBeta-0.7.2_OSX_10.11.tar.gz # [osx]
-  url: https://github.com/COMBINE-lab/salmon/releases/download/v0.7.2/SalmonBeta-0.7.2_OSX_10.11.tar.gz # [osx]
-  sha256: 4e832696826e04f8f02c3ce2645b5aeda09fafa4ff97dc0a785ef023003e26c1 # [osx]
-  fn: salmon-v0.7.2.tar.gz # [linux]
-  url: https://github.com/COMBINE-lab/salmon/archive/v0.7.2.tar.gz # [linux]
-  sha256: d35147663d349a6c28bcabf51e85d5a45f24273be1c4cda76173ffa15bd68d0a
+  url: https://github.com/COMBINE-lab/salmon/archive/v{{ version }}.tar.gz
+  sha256: 21b46dc00ac60409ce0a743019fa26a41a02ba2dcd72fea0678f862e41211246
 
 requirements:
   build:
     - autoconf
-    - boost {{CONDA_BOOST}}*
     - cmake
-    - tbb
+    - make
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
+  host:
+    - boost-cpp
+    - icu 
     - zlib
     - bzip2
+    - unzip
+    - jemalloc >=5.1.0
+    - tbb-devel
   run:
-    - boost {{CONDA_BOOST}}*
+    - boost-cpp
     - tbb
-    - zlib
-    - bzip2
+
 test:
-    commands:
-      - salmon --help
+  source_files:
+    - sample_data.tgz
+  commands:
+    - salmon --help
+
+about:
+  home: https://github.com/COMBINE-lab/salmon
+  license: GPLv3
+  license_file: LICENSE
+  summary: Highly-accurate & wicked fast transcript-level quantification from RNA-seq reads using selective alignment
+
+extra:
+  recipe-maintainers:
+    - rob-p
+    - k3yavi
+  identifiers:
+    - biotools:salmon
+    - usegalaxy-eu:salmon
+    - usegalaxy-eu:alevin
+    - doi:10.1038/nmeth.4197

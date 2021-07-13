@@ -1,50 +1,99 @@
+{% set version = "1.20.0" %}
+{% set name = "isomiRs" %}
+{% set bioc = "3.13" %}
+
 package:
-  name: bioconductor-isomirs
-  version: 1.0.3
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
 source:
-  fn: isomiRs_1.0.3.tar.gz
-  url: http://www.imsbio.co.jp/RGM-files/R_BC/download/isomiRs_1.0.3.tar.gz
-  md5: 36669b2e85ce69a0f168afe55e11c928
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 0d43608d670381601c169b985a776343
 build:
   number: 0
   rpaths:
     - lib/R/lib/
     - lib/
+  noarch: generic
+# Suggests: knitr, org.Mm.eg.db, targetscan.Hs.eg.db, pheatmap, BiocStyle, testthat
 requirements:
-  build:
-    - 'bioconductor-biocgenerics >=0.7.5'
-    - bioconductor-deseq2
-    - bioconductor-genomicranges
-    - bioconductor-iranges
-    - bioconductor-s4vectors
-    - 'bioconductor-summarizedexperiment >=0.2.0'
-    - r
+  host:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-degreport >=1.28.0,<1.29.0'
+    - 'bioconductor-deseq2 >=1.32.0,<1.33.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-limma >=3.48.0,<3.49.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-assertive.sets
+    - r-base
+    - r-broom
+    - r-cluster
+    - r-cowplot
     - r-discriminer
     - r-dplyr
     - r-ggally
     - r-ggplot2
     - r-gplots
-    - r-plyr
+    - r-gridextra
+    - r-gtools
     - r-rcolorbrewer
+    - r-readr
+    - r-reshape
+    - r-rlang
+    - r-stringr
+    - r-tibble
+    - r-tidyr
   run:
-    - 'bioconductor-biocgenerics >=0.7.5'
-    - bioconductor-deseq2
-    - bioconductor-genomicranges
-    - bioconductor-iranges
-    - bioconductor-s4vectors
-    - 'bioconductor-summarizedexperiment >=0.2.0'
-    - r
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-degreport >=1.28.0,<1.29.0'
+    - 'bioconductor-deseq2 >=1.32.0,<1.33.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-limma >=3.48.0,<3.49.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-assertive.sets
+    - r-base
+    - r-broom
+    - r-cluster
+    - r-cowplot
     - r-discriminer
     - r-dplyr
     - r-ggally
     - r-ggplot2
     - r-gplots
-    - r-plyr
+    - r-gridextra
+    - r-gtools
     - r-rcolorbrewer
+    - r-readr
+    - r-reshape
+    - r-rlang
+    - r-stringr
+    - r-tibble
+    - r-tidyr
 test:
   commands:
-    - '$R -e "library(''isomiRs'')"'
+    - '$R -e "library(''{{ name }}'')"'
 about:
-  home: http://bioconductor.org/packages/release/bioc/html/isomiRs.html
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
   license: 'MIT + file LICENSE'
-  summary: 'Characterization of miRNAs and isomiRs, clustering and differential expression.'
+  summary: 'Analyze isomiRs and miRNAs from small RNA-seq'
+  description: 'Characterization of miRNAs and isomiRs, clustering and differential expression.'
+  license_file: LICENSE
+extra:
+  identifiers:
+    - biotools:isomirs
+    - doi:10.1093/bioinformatics/btv632
+  parent_recipe:
+    name: bioconductor-isomirs
+    path: recipes/bioconductor-isomirs
+    version: 1.8.0
+

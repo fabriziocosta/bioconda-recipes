@@ -1,0 +1,49 @@
+{% set version = "1.68.0" %}
+{% set name = "ROC" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: c5bbc165c0dfaa80d6ebebd462144584
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+# Suggests: Biobase
+requirements:
+  host:
+    - r-base
+    - r-knitr
+    - libblas
+    - liblapack
+  run:
+    - r-base
+    - r-knitr
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: Artistic-2.0
+  summary: 'utilities for ROC, with microarray focus'
+  description: 'Provide utilities for ROC, with microarray focus.'
+extra:
+  identifiers:
+    - biotools:roc
+    - doi:10.1038/nmeth.3252
+  parent_recipe:
+    name: bioconductor-roc
+    path: recipes/bioconductor-roc
+    version: 1.56.0
+

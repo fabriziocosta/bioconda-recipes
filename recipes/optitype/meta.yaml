@@ -1,17 +1,18 @@
+{% set version = "1.3.5" %}
+
 package:
   name: optitype
-  version: '1.2'
+  version: {{ version }}
+
 build:
-  number: 0
-  skip: True # [osx]
+  noarch: generic
+  number: 1
+
 source:
-  fn: OptiType-1.2.tar.gz
-  url: https://github.com/FRED-2/OptiType/archive/v1.2.tar.gz
-  md5: 529fa4a17cd6c79db2badc70e99dc118
+  url: https://github.com/FRED-2/OptiType/archive/v{{ version }}.tar.gz
+  sha256: c46029dde6538bd75dd5a874fd7f2cc5ad370162bd2c6796f6327e2cd88f5aa3
 
 requirements:
-  build:
-    - python
   run:
     - python
     - numpy
@@ -20,7 +21,7 @@ requirements:
     - pytables
     - pandas
     - pysam
-    - matplotlib
+    - matplotlib-base
     - samtools
     - six
     - future
@@ -35,4 +36,3 @@ about:
   home: https://github.com/FRED-2/OptiType
   license: BSD
   summary: Precision HLA typing from next-generation sequencing data
-

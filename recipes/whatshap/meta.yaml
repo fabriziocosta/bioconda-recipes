@@ -1,44 +1,51 @@
 package:
   name: whatshap
-  version: "0.13"
-
-about:
-  home: https://whatshap.readthedocs.io/
-  license: MIT License
-  summary: 'phase genomic variants using DNA sequencing reads (haplotype assembly)'
+  version: "1.1"
 
 source:
-  fn: whatshap-0.13.tar.gz
-  url: https://pypi.python.org/packages/e2/f3/c71cb4bc3ba3b1234ee0c5fe729c60440164e07437695ca09c61750e0e11/whatshap-0.13.tar.gz
-  md5: 6c9c8b7d6138b60a5a070f0de59f576f
-
-requirements:
-  # To do: Pinnng of the setuptools version is a workaround. Try to remove it.
-  build:
-    - gcc   # [not osx]
-    - llvm  # [osx]
-    - python
-    - setuptools ==23
-    - pysam <0.9.0
-    - pyvcf
-    - pyfaidx
-    - xopen
-  run:
-    - libgcc  # [not osx]
-    - python
-    - setuptools ==23
-    - pysam <0.9.0
-    - pyvcf
-    - pyfaidx
-    - xopen
+  url: https://files.pythonhosted.org/packages/94/69/20b124a032b37c73ac56708744cbf2542cbc3e31390f261853ca5a6f62fe/whatshap-1.1.tar.gz
+  sha256: 4e6486e6ce2babf55a225dd9e0030df6fcc27629d34803428cbe88a79137bb6f
 
 build:
   skip: True  # [not py3k]
-  script: python3 setup.py install  # [not osx]
-  script: CFLAGS="-stdlib=libc++" python3 setup.py install  # [osx]
+  script: python -m pip install --no-deps --ignore-installed .
+  number: 1
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - setuptools-scm
+  run:
+    - python
+    - pysam =0.16
+    - pyfaidx >=0.5.5.2
+    - networkx >=2.4
+    - biopython >=1.73
+    - scipy
+    - xopen >=0.9.0
+    - dataclasses  # [py<37]
+    # This is not an actual requirement, but allows to run subsequent WhatsHap commands
+    # in the same container (input files need to be indexed with tabix)
+    - htslib
 
 test:
   imports:
     - whatshap
   commands:
     - whatshap --help > /dev/null
+
+about:
+  home: https://whatshap.readthedocs.io/
+  license: MIT License
+  summary: 'phase genomic variants using DNA sequencing reads (haplotype assembly)'
+
+extra:
+  identifiers:
+    - biotools:whatshap
+    - doi:10.1089/cmb.2014.0157
+  recipe-maintainers:
+    - marcelm

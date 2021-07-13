@@ -1,0 +1,75 @@
+{% set version = "1.18.0" %}
+{% set name = "chromstaR" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 6fbb3dba2abcf6d4e13157eef75dc6e9
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+# Suggests: knitr, BiocStyle, testthat, biomaRt
+requirements:
+  host:
+    - 'bioconductor-bamsignals >=1.24.0,<1.25.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-chromstardata >=1.18.0,<1.19.0'
+    - 'bioconductor-genomeinfodb >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicalignments >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rsamtools >=2.8.0,<2.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - r-base
+    - r-doparallel
+    - r-foreach
+    - r-ggplot2
+    - r-mvtnorm
+    - r-reshape2
+    - libblas
+    - liblapack
+  run:
+    - 'bioconductor-bamsignals >=1.24.0,<1.25.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-chromstardata >=1.18.0,<1.19.0'
+    - 'bioconductor-genomeinfodb >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicalignments >=1.28.0,<1.29.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rsamtools >=2.8.0,<2.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - r-base
+    - r-doparallel
+    - r-foreach
+    - r-ggplot2
+    - r-mvtnorm
+    - r-reshape2
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: Artistic-2.0
+  summary: 'Combinatorial and Differential Chromatin State Analysis for ChIP-Seq Data'
+  description: 'This package implements functions for combinatorial and differential analysis of ChIP-seq data. It includes uni- and multivariate peak-calling, export to genome browser viewable files, and functions for enrichment analyses.'
+extra:
+  identifiers:
+    - biotools:chromstar
+    - doi:10.1101/038612
+  parent_recipe:
+    name: bioconductor-chromstar
+    path: recipes/bioconductor-chromstar
+    version: 1.6.2
+

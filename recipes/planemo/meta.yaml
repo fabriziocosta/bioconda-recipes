@@ -1,54 +1,54 @@
+{% set name = "planemo" %}
+{% set version = "0.74.5" %}
+
 package:
-  name: planemo
-  version: "0.34.1"
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
 
 source:
-  fn: planemo-0.34.1.tar.gz
-  url: https://pypi.python.org/packages/99/3c/6f1004343bad1e79106eb47030a055b02655e08137f55036ca13f71f55cc/planemo-0.34.1.tar.gz
-  md5: cdb907816e915acaa873f61522166739
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3e1e9127267103f43894db49d18bb253add0a5e1ac8ec774e973d57b79904d98
 
 build:
-  preserve_egg_dir: True
-  skip: True # [py3k]
+  number: 0
+  noarch: python
   entry_points:
     - planemo=planemo.cli:planemo
-
-  number: 1
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv "
 
 requirements:
-  build:
-    - python
-    - setuptools
-    - six
-    - click
-    - pyaml
-    - bioblend >=0.8.0
-    - jinja2
-    - virtualenv
-    - galaxy-lib >=16.7.10
-    - aenum
-
+  host:
+    - pip
+    - python >=3.6
   run:
-    - python
-    - setuptools
-    - six
-    - glob2
+    - allure-python-commons
+    - beautifulsoup4
+    - bioblend >=0.14.0
     - click
-    - pyaml
-    - bioblend >=0.8.0
+    - cwltool >=1.0.20191225192155
+    - docutils
+    - ephemeris >=0.10.3
+    - galaxy-containers
+    - galaxy-tool-util >=20.9.0
+    - galaxy-util >=20.5.0
+    - glob2
+    - gxformat2 >=0.12.0
     - jinja2
+    - lxml
+    - oyaml
+    - pyaml
+    - python >=3.6
+    - pyyaml
+    - tabulate
+    - six >=1.7.0
     - virtualenv
-    - galaxy-lib >=16.7.10
-    - aenum
 
 test:
-  # Python imports
   imports:
     - planemo
     - planemo.commands
     - planemo.conda_verify
     - planemo.cwl
-    - planemo.cwl.cwl2script
     - planemo.database
     - planemo.engine
     - planemo.galaxy
@@ -58,14 +58,19 @@ test:
     - planemo.shed
     - planemo.shed2tap
     - planemo.test
+    - planemo.training
     - planemo.xml
 
   commands:
-
     - planemo --help
 
 about:
   home: https://github.com/galaxyproject/planemo
-  license: Academic Free License (AFL)
+  license: MIT License
   summary: 'Command-line utilities to assist in building tools for the Galaxy project (http://galaxyproject.org/).'
-  license_family: Apache
+  license_family: MIT
+
+extra:
+  container:
+    # click requires a Unicode locale
+    extended-base: True

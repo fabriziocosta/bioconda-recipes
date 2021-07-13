@@ -1,0 +1,58 @@
+{% set version = "1.12.0" %}
+{% set name = "GSEABenchmarkeR" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: df781cc98af57a8fb4539c521a42a965
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: BiocStyle, knitr, rmarkdown
+requirements:
+  host:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-annotationhub >=3.0.0,<3.1.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocfilecache >=2.0.0,<2.1.0'
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-edger >=3.34.0,<3.35.0'
+    - 'bioconductor-enrichmentbrowser >=2.22.0,<2.23.0'
+    - 'bioconductor-experimenthub >=2.0.0,<2.1.0'
+    - 'bioconductor-keggandmetacoredzpathwaysgeo >=1.12.0,<1.13.0'
+    - 'bioconductor-keggdzpathwaysgeo >=1.30.0,<1.31.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+  run:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-annotationhub >=3.0.0,<3.1.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocfilecache >=2.0.0,<2.1.0'
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-edger >=3.34.0,<3.35.0'
+    - 'bioconductor-enrichmentbrowser >=2.22.0,<2.23.0'
+    - 'bioconductor-experimenthub >=2.0.0,<2.1.0'
+    - 'bioconductor-keggandmetacoredzpathwaysgeo >=1.12.0,<1.13.0'
+    - 'bioconductor-keggdzpathwaysgeo >=1.30.0,<1.31.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: Artistic-2.0
+  summary: 'Reproducible GSEA Benchmarking'
+  description: 'The GSEABenchmarkeR package implements an extendable framework for reproducible evaluation of set- and network-based methods for enrichment analysis of gene expression data. This includes support for the efficient execution of these methods on comprehensive real data compendia (microarray and RNA-seq) using parallel computation on standard workstations and institutional computer grids. Methods can then be assessed with respect to runtime, statistical significance, and relevance of the results for the phenotypes investigated.'
+

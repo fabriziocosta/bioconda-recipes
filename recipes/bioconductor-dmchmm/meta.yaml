@@ -1,0 +1,53 @@
+{% set version = "1.14.0" %}
+{% set name = "DMCHMM" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 1c3e4861b53cc3748358a90fbfecd4a6
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: testthat, knitr
+requirements:
+  host:
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rtracklayer >=1.52.0,<1.53.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+    - r-calibrate
+    - r-fdrtool
+    - r-multcomp
+  run:
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rtracklayer >=1.52.0,<1.53.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
+    - r-calibrate
+    - r-fdrtool
+    - r-multcomp
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: GPL-3
+  summary: 'Differentially Methylated CpG using Hidden Markov Model'
+  description: 'A pipeline for identifying differentially methylated CpG sites using Hidden Markov Model in bisulfite sequencing data.'
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+

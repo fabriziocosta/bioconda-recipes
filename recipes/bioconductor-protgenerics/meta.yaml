@@ -1,24 +1,42 @@
+{% set version = "1.24.0" %}
+{% set name = "ProtGenerics" %}
+{% set bioc = "3.13" %}
+
 package:
-  name: bioconductor-protgenerics
-  version: 1.4.0
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
 source:
-  fn: ProtGenerics_1.4.0.tar.gz
-  url: https://bioarchive.galaxyproject.org/ProtGenerics_1.4.0.tar.gz
-  md5: 129914ba3eba2a8efcc7995d0656a8cf
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 07e73a9c97addf4d99af00f4d7f9491a
 build:
-  number: 1
+  number: 0
   rpaths:
     - lib/R/lib/
     - lib/
+  noarch: generic
+# Suggests: testthat
 requirements:
-  build:
-    - r
+  host:
+    - r-base
   run:
-    - r
+    - r-base
 test:
   commands:
-    - '$R -e "library(''ProtGenerics'')"'
+    - '$R -e "library(''{{ name }}'')"'
 about:
-  home: http://bioconductor.org/packages/release/bioc/html/ProtGenerics.html
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
   license: Artistic-2.0
-  summary: 'S4 generic functions needed by Bioconductor proteomics packages.'
+  summary: 'Generic infrastructure for Bioconductor mass spectrometry packages'
+  description: 'S4 generic functions and classes needed by Bioconductor proteomics packages.'
+extra:
+  identifiers:
+    - biotools:protgenerics
+    - doi:10.1038/nmeth.3252
+  parent_recipe:
+    name: bioconductor-protgenerics
+    path: recipes/bioconductor-protgenerics
+    version: 1.12.0
+

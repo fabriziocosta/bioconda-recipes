@@ -1,41 +1,42 @@
 package:
   name: pybedtools
-  version: '0.7.8'
+  version: '0.8.2'
 
 source:
-  url: https://pypi.python.org/packages/2d/ee/aa19e50e03e06c817d00eadf8b56824b9e473da8c3e8ca3b33a11717ee6f/pybedtools-0.7.8.tar.gz
-  fn: pybedtools-0.7.7.tar.gz
-  md5: 966d61678f59bba85a3acd3bd48515d5
+  url: https://files.pythonhosted.org/packages/5b/57/46e9c8135954550d1d3a05db5b0462a264239f7f71c78af304bb47c5c900/pybedtools-0.8.2.tar.gz
+  sha256: a184a36099458627e7ef52ea88218f7c00dc9c505b4256ece9ede58b1efa8771
 
 build:
   number: 1
-  skip: False
 
 requirements:
   build:
+    - {{ compiler('cxx') }}
+  host:
     - python
     - six
-    - pysam >=0.8.1
+    - pysam >=0.16
     - setuptools
     - pandas
-    - cython
-    - gcc  # [linux]
-    - llvm # [osx]
     - zlib
-
   run:
     - python
+    - bedtools
     - six
-    - pysam >=0.8.1
+    - pysam >=0.16
     - pandas
 
 test:
   imports:
     - pybedtools
   commands:
-    - python -c "import pybedtools; help(pybedtools.BedTool.intersect)"
+    - python -c "import pybedtools; help(pybedtools.BedTool.intersect)" | grep "Original BEDTools help"
 
 about:
   home: https://github.com/daler/pybedtools
   license: MIT
   summary: Wraps BEDTools for use in Python and adds many additional features.
+
+extra:
+  identifiers:
+    - biotools:pybedtools

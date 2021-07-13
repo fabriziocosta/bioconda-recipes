@@ -1,0 +1,32 @@
+{% set name = "lima" %}
+{% set version = "2.2.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/PacificBiosciences/barcoding/releases/download/v{{ version }}/lima
+  sha256: a852f4fe4ccef8a11f29424c38390adb39cb104289b33448859c7663c2f97e0c
+
+build:
+  number: 0
+  skip: True  # [osx]
+
+test:
+  commands:
+    - lima -h
+
+about:
+  home: https://github.com/PacificBiosciences/pbbioconda
+  license: BSD-3-Clause-Clear
+  summary: lima - The PacBio Barcode Demultiplexer
+
+extra:
+  recipe-maintainers:
+    - armintoepfer
+    - pb-dseifert
+    - mhsieh
+  skip-lints:
+    #repackaged binary
+    - should_be_noarch_generic

@@ -1,56 +1,64 @@
+{% set version = "0.16.1" %}
+
 package:
   name: gimmemotifs
-  version: '0.10.0b4'
+  version: {{ version }}
 
 source:
-  url: https://github.com/simonvh/gimmemotifs/releases/download/0.10.0b4/gimmemotifs-0.10.0b4.tar.gz
-  fn: gimmemotifs-0.10.0b4.tar.gz
-  md5: c335823708aa59910c7431aab254742a
+  url: https://github.com/vanheeringen-lab/gimmemotifs/releases/download/{{ version }}/gimmemotifs-{{ version }}.tar.gz
+  sha256: d86b2eeae77d1a761ec73fc3d402f5645c449da17b9384ec8eb18f7823aa763e
 
 build:
-  number: 1
-  skip: True # [not py27 or osx]
+  number: 0
+  skip: True  # [py2k]
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - pip
     - python
-    - numpy
-    - scipy
-    - matplotlib
-    - pyyaml
     - pybedtools
-    - pymc
-    - scikit-learn
-    - lightning
-    - moods
-    - statsmodels
-    - jinja2
-    - seaborn
-    - perl
-    - meme
-    - gcc # [linux]
-    - llvm # [osx]
-
   run:
-    - libgcc # [linux]
-    - python
-    - numpy
-    - scipy
-    - matplotlib
-    - pyyaml
-    - pybedtools
-    - pymc
-    - scikit-learn
-    - lightning
-    - moods
-    - ucsc-genepredtobed
-    - statsmodels
-    - r-robustrankaggreg
+    - biofluff >=3.0.4
+    - configparser
+    - dinamo  # [not osx]
+    - diskcache
+    - feather-format
+    - future
+    - gadem
+    - genomepy >=0.9.0
+    - homer
+#    - ipywidgets  # Necessary for progress bar in Jupyter notebook
     - jinja2
-    - seaborn
-    - perl
-    - meme
-
+    - logomaker
+    - loguru
+    - matplotlib-base >=3.1.2
+    - meme >=5.1.1
+    - ncurses >=6.1
+    - pandas >=1.1
+    - prosampler
+    - pillow >=0.7.1.2
+    - pyarrow >=0.16.0
+    - pybedtools
+    - python
+    - python-xxhash
+    - pyyaml >=3.10
+    - qnorm >=0.5
+    - scikit-learn >=0.23.2
+    - scipy >=1.4.1
+    - seaborn >=0.10.1
+    - six
+    - statsmodels
+    - tqdm >=4.46.1
+    - trawler
+    - ucsc-bigbedtobed
+    - weeder
+    - xdg
+    - xgboost >=1.0.2
+    - xxmotif
+          
 test:
   imports:
     - gimmemotifs
@@ -59,6 +67,12 @@ test:
     - gimme --help
 
 about:
-  home: https://github.com/simonvh/gimmemotifs
+  home: https://github.com/vanheeringen-lab/gimmemotifs
   license: MIT
   summary: Motif prediction pipeline and various motif-related tools
+
+extra:
+  recipe-maintainers:
+    - simonvh
+  identifiers:
+    - biotools:gimmemotifs

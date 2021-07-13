@@ -1,6 +1,10 @@
+{% set version="2.0.0RC8" %}
+{% set sha256="a7a7faf992e6bdffa67be10c9bb40a32d506be4972c806094ffe2f880b5bb8d2" %}
+{% set vrnaversion="2.4.13" %}
+
 package:
   name: locarna
-  version: "1.8.11"
+  version: {{ version }}
 
 about:
   home: http://www.bioinf.uni-freiburg.de/Software/LocARNA/
@@ -12,24 +16,29 @@ build:
   number: 1
 
 source:
-  fn: locarna-1.8.11.tar.gz
-  url: "http://www.bioinf.uni-freiburg.de/Software/LocARNA/Releases/locarna-1.8.11.tar.gz"
-  sha256: 29ea5c21689454340a04a03990ad59c1a9e7b53838b5c2ba905a0fd5476f7762
+  url: "https://github.com/s-will/LocARNA/releases/download/v{{ version }}/locarna-{{ version }}.tar.gz"
+  sha256: {{ sha256 }}
+
 requirements:
-  build: 
-    - viennarna >=2.2.8
-    - llvm # [osx]
-    - gcc # [linux]
-  run: 
-    - viennarna >=2.2.8
-    - perl-threaded
-    - libgcc # [linux]
+  build:
+    - make
+    - {{ compiler('cxx') }}
+  host:
+    - viennarna =={{ vrnaversion }}
+  run:
+    - viennarna =={{ vrnaversion }}
+    - perl
 
 test:
   commands:
-    - mlocarna --version  
+    - mlocarna --version
     - locarna --version
     - locarna_p --version
     - sparse --version
     - exparna_p --version
     - echo -e ">D10744\nGGAAAAUUGAUCAUCGGCAAGAUAAGUUAUUUACUAAAUAAUAGGAUUUAAUAACCUGGUGAGUUCGAAUCUCACAUUUUCCG" | locarna_rnafold_pp --in-loop --stacking --noLP -p0.5 |head -n3
+
+extra:
+  identifiers:
+    - biotools:locarna
+    - doi:10.1371/journal.pcbi.0030065

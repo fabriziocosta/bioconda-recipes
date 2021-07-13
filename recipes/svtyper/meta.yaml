@@ -1,27 +1,28 @@
+{% set version="0.7.1" %}
+
 package:
   name: svtyper
-  version: 0.0.4
+  version: {{ version }}
 
 source:
-  fn: svtyper-e43a1669.tar.gz
-  url: https://github.com/hall-lab/svtyper/archive/e43a1669.tar.gz
-  #fn: svtyper-0.0.2.tar.gz
-  #url: https://github.com/hall-lab/svtyper/archive/v0.0.2.tar.gz
+  url: https://github.com/hall-lab/svtyper/archive/v{{ version }}.tar.gz
+  sha256: 0abf90172eecad49511a14c9c383314e973cac7a7cc086ed88b7757f00cce0b4
 
 build:
   number: 0
-  skip: True # [not py27 or osx]
+  noarch: python
 
 requirements:
-  build:
-    - python
+  host:
+    - python <3
     - setuptools
-    - pysam
-
+    - pytest-runner
   run:
-    - python
-    - setuptools
-    - pysam
+    - python <3
+    - pysam >=0.15.0
+    - numpy
+    - scipy
+    - cytoolz >=0.8.2
 
 test:
   commands:
@@ -31,4 +32,3 @@ about:
   home: https://github.com/hall-lab/svtyper
   license: MIT
   summary: Bayesian genotyper for structural variants
-

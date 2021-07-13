@@ -1,0 +1,49 @@
+{% set version = "0.8.1" %}
+
+package:
+  name: hicup
+  version: {{ version }}
+
+build:
+  number: 0
+  noarch: generic
+
+source:
+  url: https://github.com/StevenWingett/HiCUP/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 585fb0099d6313c1d9802a13267c0f8744b8dde506aac80c6b415736c45ba62f
+  patches:
+    - get_captured_reads.patch
+
+requirements:
+  run:
+    - perl
+    - bowtie2
+    - bowtie
+    - r-base
+    - samtools
+
+test:
+  commands:
+    - hicup_mapper
+    - hicup_digester
+    - hicup_truncater
+    - hicup_deduplicator 2>&1 | grep Please
+    - hicup_truncater
+    - hicup
+    - hicup2hicpipe
+    - hicup2gothic
+    - hicup2fithic
+    - hicup2homer
+    # This one has a different error code
+    - get_captured_reads || [[ $? == 255 ]]
+
+
+about:
+  home: 'http://www.bioinformatics.babraham.ac.uk/projects/hicup/'
+  license: GPLv3
+  summary: 'A tool for mapping and performing quality control on Hi-C data'
+
+extra:
+  identifiers:
+    - biotools:hicup
+    - doi:10.12688/f1000research.7334.1

@@ -1,9 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-$PYTHON setup.py install
+pushd nasp/nasptool
+echo 'module "github.com/TGenNorth/nasp"' > go.mod
+go build -o ../nasptool_linux_64
+popd
 
-# Add more build steps here, if they are necessary.
-
-# See
-# http://docs.continuum.io/conda/build.html
-# for a list of environment variables that are set during the build process.
+$PYTHON -m pip install --no-deps --ignore-installed --no-cache-dir -vvv .

@@ -1,35 +1,46 @@
+{% set version="202010.02" %}
+
 package:
   name: sentieon
-  version: '201606'
+  version: {{ version }}
 source:
-  fn: sentieon-genomics-201606-linux.tar.gz # [linux]
-  fn: sentieon-genomics-201606-mac.tar.gz # [osx]
-  url: https://sentieon.sharepoint.com/Release/_layouts/15/guestaccess.aspx?guestaccesstoken=zhJIU32%2bhXz%2fGZ1x1Jk%2b038%2be0pw9PeegPzIltkQzHg%3d&docid=0f14eccb85c34472988e83d084f67e26e # [linux]
-  url: https://sentieon.sharepoint.com/Release/_layouts/15/guestaccess.aspx?guestaccesstoken=xV%2bluck4cIhDqLGmeVzLT5p1%2b67SiarhwZqRUx%2fOK5w%3d&docid=0b3cf62ebe0fc4cc78615b5a1989b0108 # [osx]
-
-  patches:
-    # Fix driver script so it resolves location including symlinks
-    - sentieon_symlinks.patch
+  - url: https://s3.amazonaws.com/sentieon-release/software/sentieon-genomics-{{ version }}.tar.gz # [linux64]
+    sha256: 52d527eb59d07eb9ddc1fbcbd4cf8176b6127b10d5f91c612c94cb26a57c7787 # [linux64]
+    patches: # [linux64]
+      # Fix driver scripts so they resolves location including symlinks
+      - sentieon_symlinks.patch # [linux64]
+      - bwa_symlinks.patch # [linux64]
+  - url: https://s3.amazonaws.com/sentieon-release/software/mac-sentieon-genomics-{{ version }}.tar.gz # [osx]
+    sha256: 7d500746186dd806009eff7a5aae72a57e616af3c246c62f0cb4eb3e795889e9 # [osx]
+    patches: # [osx]
+      - sentieon_symlinks.patch # [osx]
+      - bwa_symlinks.patch # [osx]
 
 build:
   number: 0
-  # Currently failing on OSX when copying and fixing shared libraries
-  # included with sentieon package. I don't understand problem:
-  # https://travis-ci.org/bioconda/bioconda-recipes/jobs/141822657
-  skip: True # [not linux]
+  skip: True # [not linux64 and not osx]
+  binary_relocation: false
 
 requirements:
-  build:
-  run:
-    - libgfortran
-    - libgcc
+  host:
     - zlib
+  run:
+    - python >=2.7
+    - zlib
+
 test:
   commands:
-    # Pre-built binaries require recent glibc (2.7) so won't work on CentOS 5 tests
-    #- 'sentieon driver'
-    #- 'sentieon-licsrvr'
+    - LD_LIBRARY_PATH=/usr/local/lib sentieon driver
+    - LD_LIBRARY_PATH=/usr/local/lib sentieon driver --help --algo TNscope
+    - LD_LIBRARY_PATH=/usr/local/lib sentieon STAR --help # [linux64]
+    - LD_LIBRARY_PATH=/usr/local/lib sentieon umi --help
+    - LD_LIBRARY_PATH=/usr/local/lib sentieon util --help
+
 about:
-  home: http://sentieon.com
-  license: Commercial (requires license for use)
+  home: https://www.sentieon.com
+  license: Commercial (requires license for use; redistribution allowed)
   summary: Accelerated performance bioinformatics tools for mapping and variant calling
+
+extra:
+  skip-lints:
+      - should_be_noarch_generic # Supports OSX and Linux only

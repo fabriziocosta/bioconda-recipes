@@ -1,0 +1,33 @@
+{% set version = "2.21" %}
+
+package:
+  name: mappy
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/m/mappy/mappy-{{ version }}.tar.gz
+  sha256: 005c6c1981f39e695b2cb4316942fa9a37e677e7604197b21fc5c71cc1093f72
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - cython
+    - setuptools
+    - zlib
+  run:
+    - python
+    - zlib
+
+test:
+  imports:
+    - mappy
+
+about:
+  home: https://github.com/lh3/minimap2
+  license: MIT
+  summary: 'Minimap2 Python binding'

@@ -1,0 +1,79 @@
+{% set version = "1.20.0" %}
+{% set name = "bioCancer" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: a7e3fe0453298e55fd4fce88d1cc71af
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: BiocStyle, rmarkdown, knitr, testthat (>= 0.10.0)
+requirements:
+  host:
+    - 'bioconductor-annotationfuncs >=1.42.0,<1.43.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-clusterprofiler >=4.0.0,<4.1.0'
+    - 'bioconductor-dose >=3.18.0,<3.19.0'
+    - 'bioconductor-genetclassifier >=1.32.0,<1.33.0'
+    - 'bioconductor-org.hs.eg.db >=3.13.0,<3.14.0'
+    - 'bioconductor-reactome.db >=1.76.0,<1.77.0'
+    - 'bioconductor-reactomepa >=1.36.0,<1.37.0'
+    - 'r-algdesign >=1.1.7.3'
+    - r-base
+    - 'r-cgdsr >=1.2.6'
+    - 'r-diagrammer <=1.01'
+    - 'r-dplyr >=0.7.2'
+    - 'r-dt >=0.3'
+    - r-htmlwidgets
+    - 'r-import >=1.1.0'
+    - r-plyr
+    - 'r-radiant.data >=0.9.1'
+    - 'r-shiny >=1.0.5'
+    - r-shinythemes
+    - r-tibble
+    - r-visnetwork
+    - 'r-xml >=3.98'
+  run:
+    - 'bioconductor-annotationfuncs >=1.42.0,<1.43.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-clusterprofiler >=4.0.0,<4.1.0'
+    - 'bioconductor-dose >=3.18.0,<3.19.0'
+    - 'bioconductor-genetclassifier >=1.32.0,<1.33.0'
+    - 'bioconductor-org.hs.eg.db >=3.13.0,<3.14.0'
+    - 'bioconductor-reactome.db >=1.76.0,<1.77.0'
+    - 'bioconductor-reactomepa >=1.36.0,<1.37.0'
+    - 'r-algdesign >=1.1.7.3'
+    - r-base
+    - 'r-cgdsr >=1.2.6'
+    - 'r-diagrammer <=1.01'
+    - 'r-dplyr >=0.7.2'
+    - 'r-dt >=0.3'
+    - r-htmlwidgets
+    - 'r-import >=1.1.0'
+    - r-plyr
+    - 'r-radiant.data >=0.9.1'
+    - 'r-shiny >=1.0.5'
+    - r-shinythemes
+    - r-tibble
+    - r-visnetwork
+    - 'r-xml >=3.98'
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: 'AGPL-3 | file LICENSE'
+  summary: 'Interactive Multi-Omics Cancers Data Visualization and Analysis'
+  description: 'bioCancer is a Shiny App to visualize and analyse interactively Multi-Assays of Cancer Genomic Data.'
+  license_file: LICENSE
+

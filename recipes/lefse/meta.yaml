@@ -1,37 +1,32 @@
-{% set name = "lefse" %}
-{% set version = "1.0.7" %}
+{% set version = "1.1.1" %}
 
 package:
-  name: {{ name|lower }}
+  name: lefse
   version: {{ version }}
 
 source:
-  fn: {{ name|lower }}_{{ version }}.tar.gz
-  url: https://bitbucket.org/nsegata/{{ name|lower }}/get/{{ version }}.tar.gz
-  sha256: 9e9da0ec4921ebd569c77310274b2487150ffcafaea876b066a1897470fd6f38
+  url: https://github.com/SegataLab/lefse/archive/refs/tags/1.1.1.tar.gz
+  sha256: 26f2f9d3e5ee44e588fab4d58bffcb811d6bdab39b6c7d0ae5a406bcde24e663
+
+build:
+  number: 0
+  noarch: generic
 
 requirements:
-  build:
-    - python
+  host:
   run:
-    - python
-    - r
+    - python >=3.7
+    - r-base
     - r-survival
     - r-mvtnorm
     - r-modeltools
     - r-coin
     - r-mass
-    - rpy2 >=2.1
+    - rpy2
     - numpy
-    - matplotlib >=1.0
-    - argparse [py26]
-
-build:
-  number: 2
-  skip: True  # [not py27]
-
-extra:
-  notes: "Prefix with 'lefse-'' some script names that are rather generic: 'format_input.py', 'plot_cladogram.py', 'plot_features.py', 'plot_res.py'."
+    - matplotlib-base
+    - icu
+    - biom-format
 
 test:
   commands:
@@ -44,6 +39,10 @@ test:
     - qiime2lefse.py -h
 
 about:
-  home: https://bitbucket.org/nsegata/lefse
+  home: https://github.com/SegataLab/lefse
   summary: "LDA Effect Size (LEfSe) (Segata et. al 2010) is an algorithm for high-dimensional biomarker discovery and explanation that identifies genomic features (genes, pathways, or taxa) characterizing the differences between two or more biological conditions."
+  license: Custom
+  license_file: license.txt
 
+extra:
+  notes: "Prefix with 'lefse-'' some script names that are rather generic: 'format_input.py', 'plot_cladogram.py', 'plot_features.py', 'plot_res.py'."

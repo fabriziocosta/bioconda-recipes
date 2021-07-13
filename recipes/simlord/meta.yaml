@@ -1,26 +1,25 @@
 package:
   name: simlord
-  version: "0.7.3"
+  version: "1.0.4"
 
 source:
-  fn: simlord-0.7.3.zip
-  url: https://pypi.python.org/packages/3a/55/8f83e4aeee213983aae897127368a1deb39613ee8b677b977007a54b95dd/simlord-0.7.3.zip
-  md5: d0429a56e010909731996730af3dc547
+  url: https://files.pythonhosted.org/packages/b7/41/0deb50e6d2b003799371dda32a2b81d254e5b665f8435c75d656a7d6d080/simlord-1.0.4.zip
+  sha256: 8f3f018da10b91ad865c602eb3926513dcdbfd3b0108f5d5006aee4bca4a74b6
 
 build:
+  number: 2
+  skip: True  # [py2k]
+  script: {{ PYTHON }} -m pip install . --ignore-installed --no-deps -vv
   entry_points:
     - simlord = simlord.simlord:main
-  skip: True # [py27]
 
 requirements:
   build:
+    - {{ compiler('c') }}
+  host:
     - python
-    - setuptools
-    - numpy
-    - scipy
-    - pysam >=0.8.4
-    - dinopy
-
+    - pip
+    - cython
   run:
     - python
     - numpy

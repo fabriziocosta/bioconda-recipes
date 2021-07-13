@@ -1,0 +1,37 @@
+{% set name = "igv" %}
+{% set version = "2.10.2" %}
+{% set sha256 = "3e36ebe7956c04ce351f8a32c349be188cb6756f46502a196c912d647255018c" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/igvteam/igv/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: generic
+
+requirements:
+  build:
+    - openjdk >=11
+  run:
+    - openjdk >=11
+
+test:
+  commands:
+    - igv --version
+    - igv_hidpi --version
+
+about:
+  home: http://www.broadinstitute.org/software/igv/home
+  license: MIT
+  summary: |
+    Integrative Genomics Viewer. Fast, efficient, scalable visualization tool for genomics
+    data and annotations.
+
+extra:
+  identifiers:
+    - biotools:igv

@@ -1,0 +1,53 @@
+{% set version = "2.20.0" %}
+{% set name = "ROntoTools" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: 15cad42fc80ae42690d7e37596c6eb44
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: RUnit, BiocGenerics
+requirements:
+  host:
+    - 'bioconductor-graph >=1.70.0,<1.71.0'
+    - 'bioconductor-kegggraph >=1.52.0,<1.53.0'
+    - 'bioconductor-keggrest >=1.32.0,<1.33.0'
+    - 'bioconductor-rgraphviz >=2.36.0,<2.37.0'
+    - r-base
+    - r-boot
+  run:
+    - 'bioconductor-graph >=1.70.0,<1.71.0'
+    - 'bioconductor-kegggraph >=1.52.0,<1.53.0'
+    - 'bioconductor-keggrest >=1.32.0,<1.33.0'
+    - 'bioconductor-rgraphviz >=2.36.0,<2.37.0'
+    - r-base
+    - r-boot
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: 'CC BY-NC-ND 4.0 + file LICENSE'
+  summary: 'R Onto-Tools suite'
+  description: 'Suite of tools for functional analysis.'
+  license_file: LICENSE
+extra:
+  identifiers:
+    - biotools:rontotools
+    - doi:10.1109/JPROC.2016.2531000
+  parent_recipe:
+    name: bioconductor-rontotools
+    path: recipes/bioconductor-rontotools
+    version: 2.8.0
+

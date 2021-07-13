@@ -1,0 +1,51 @@
+{% set version = "1.44.0" %}
+{% set name = "attract" %}
+{% set bioc = "3.13" %}
+
+package:
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
+source:
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name }}/bioconductor-{{ name }}_{{ version }}_src_all.tar.gz'
+  md5: b72c05eb2a84e52125d421c9d08e4994
+build:
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  noarch: generic
+# Suggests: illuminaHumanv1.db
+requirements:
+  host:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-gostats >=2.58.0,<2.59.0'
+    - 'bioconductor-keggrest >=1.32.0,<1.33.0'
+    - 'bioconductor-limma >=3.48.0,<3.49.0'
+    - 'bioconductor-org.hs.eg.db >=3.13.0,<3.14.0'
+    - 'bioconductor-reactome.db >=1.76.0,<1.77.0'
+    - r-base
+    - r-cluster
+  run:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-gostats >=2.58.0,<2.59.0'
+    - 'bioconductor-keggrest >=1.32.0,<1.33.0'
+    - 'bioconductor-limma >=3.48.0,<3.49.0'
+    - 'bioconductor-org.hs.eg.db >=3.13.0,<3.14.0'
+    - 'bioconductor-reactome.db >=1.76.0,<1.77.0'
+    - r-base
+    - r-cluster
+test:
+  commands:
+    - '$R -e "library(''{{ name }}'')"'
+about:
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
+  license: 'LGPL (>= 2.0)'
+  summary: 'Methods to Find the Gene Expression Modules that Represent the Drivers of Kauffman''s Attractor Landscape'
+  description: 'This package contains the functions to find the gene expression modules that represent the drivers of Kauffman''s attractor landscape. The modules are the core attractor pathways that discriminate between different cell types of groups of interest. Each pathway has a set of synexpression groups, which show transcriptionally-coordinated changes in gene expression.'
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/LGPL-3'
+

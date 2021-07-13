@@ -1,28 +1,39 @@
-# Migrated from BioBuilds recipe
-# https://anaconda.org/BioBuilds/picard
+{% set version = "2.25.6" %}
+{% set sha256 = "768709826514625381e6fa3920945360167f4e830bf72f79eb070da059676f02" %}
 
 package:
   name: picard
-  version: "2.5.0"
+  version: '{{ version }}'
 
 source:
-  fn: picard-tools-2.5.0.zip
-  url: https://github.com/broadinstitute/picard/releases/download/2.5.0/picard-tools-2.5.0.zip
-  md5: 0b9e2c9dc0043b5f8ef7b8f9b39780ae
+  url: https://github.com/broadinstitute/picard/releases/download/{{ version }}/picard.jar
+  sha256: '{{ sha256 }}'
 
 build:
-  number: 1
-  skip: False
+  noarch: generic
+  number: 0
 
 requirements:
   run:
-    - java-jdk >=8
+    - openjdk >=8
+    - r-base
 
 test:
   commands:
-    - "picard 2>&1 | grep 'USAGE: PicardCommandLine'"
+    - "bash -c 'picard 2>&1 | grep USAGE:'"
 
 about:
-  home: "http://broadinstitute.github.io/picard/"
+  home: http://broadinstitute.github.io/picard/
   license: MIT
-  summary: "Java tools for working with NGS data in the BAM format"
+  license_family: MIT
+  summary: Java tools for working with NGS data in the BAM format
+  description: >- 
+    Java tools for working with NGS data in the BAM format.
+    This package depends on 'r-base' because Picard requires R to run
+    some of its metrics commands. The 'picard-slim' package offers an 
+    installation of Picard without the  'r-base' dependency. 
+  dev_url: https://github.com/broadinstitute/picard
+
+extra:
+  identifiers:
+    - usegalaxy-eu:picard_MarkDuplicates

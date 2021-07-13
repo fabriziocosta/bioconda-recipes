@@ -1,37 +1,12 @@
 #!/bin/sh
-set -x -e
 
-export CC=${PREFIX}/bin/gcc
-export CXX=${PREFIX}/bin/g++
+set -x -e -o pipefail
 
-export INCLUDE_PATH="${PREFIX}/include"
-export LIBRARY_PATH="${PREFIX}/lib"
-export LD_LIBRARY_PATH="${PREFIX}/lib"
+make \
+  CC="${CC}" \
+  CFLAGS="${CPPFLAGS} ${CFLAGS} -g -Wall -O3 ${LDFLAGS}" \
+  LIBCURSES=-lncurses
 
-export LDFLAGS="-L${PREFIX}/lib"
-export CPPFLAGS="-I${PREFIX}/include -I${PREFIX}/include/bam"
+mkdir -p "${PREFIX}/bin"
 
-rm -rf samtools
-#We're installing this from conda
-cp -rf ${PREFIX}/include/bam ./samtools
-make
-
-
-mkdir -p $PREFIX/bin
-mkdir -p $PREFIX/scripts
-mkdir -p $PREFIX/config
-
-cp dwgsim $PREFIX/bin
-cp dwgsim_eval $PREFIX/bin
-cp scripts/dwgsim_eval_plot.py $PREFIX/bin
-
-cd scripts
-
-mkdir -p perl-build
-cp ${RECIPE_DIR}/Build.PL perl-build
-cp *.pl perl-build
-
-cd perl-build
-perl ./Build.PL
-./Build manifest
-./Build install --installdirs site
+cp dwgsim dwgsim_eval "${PREFIX}/bin/"

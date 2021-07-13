@@ -1,33 +1,27 @@
+
 package:
   name: vispr
-  version: "0.4.13"
+  version: 0.4.17
 
 source:
-  fn: vispr-0.4.13.tar.gz
-  url: https://pypi.python.org/packages/7a/42/5969696350a6e82917b2e04706986a27391bacb9f55ce7caf028fe89101b/vispr-0.4.13.tar.gz
-  md5: 6b1d8b373db2fc6e56e3f02e67012d1e
+  url: https://bitbucket.org/liulab/vispr/get/v0.4.17.tar.gz
+  sha256: 3ada4f29a652e391576c2c0390213949463b7f31cee618deb26d6cc9b72cbb07
 
 build:
-  skip: True # [py27]
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
   entry_points:
     - vispr = vispr.cli:main
 
 requirements:
-  build:
+  host:
     - python
-    - setuptools
-    - numpy
-    - flask
-    - pandas >=0.17.1
-    - pyyaml
-    - scipy
-    - scikit-learn
-    - appdirs
   run:
-    - python
-    - numpy
+    - python >=3
+    - numpy >=1.10
     - flask
-    - pandas >=0.17.1
+    - pandas
     - pyyaml
     - scipy
     - scikit-learn
@@ -35,9 +29,10 @@ requirements:
 
 test:
   commands:
-    - vispr --help > /dev/null
+    - vispr --help
 
 about:
   home: https://bitbucket.org/liulab/vispr
-  license: MIT License
+  license: MIT
+  license_family: MIT
   summary: VISPR is a visualization framework and analysis workflow for CRISPR/Cas9 knockout screens. VISPR is designed to display results calculated by MAGeCK.

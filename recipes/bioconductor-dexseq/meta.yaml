@@ -1,58 +1,77 @@
+{% set version = "1.38.0" %}
+{% set name = "DEXSeq" %}
+{% set bioc = "3.13" %}
+
 package:
-  name: bioconductor-dexseq
-  version: 1.16.6
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
 source:
-  fn: DEXSeq_1.16.6.tar.gz
-  url: http://bioconductor.org/packages/3.3/bioc/src/contrib/DEXSeq_1.16.6.tar.gz
-  md5: 54a02541abe6790f757c0740a28c4e2f
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz'
+  md5: dd2484b9e02e3de6623c359c66adae4a
 build:
   number: 0
-  skip: True # [osx]
   rpaths:
     - lib/R/lib/
     - lib/
+  noarch: generic
+# Suggests: GenomicFeatures (>= 1.13.29), pasilla (>= 0.2.22), parathyroidSE, BiocStyle, knitr, rmarkdown, testthat
 requirements:
-  build:
-    - bioconductor-biobase
-    - bioconductor-biocgenerics
-    - bioconductor-biocparallel
-    - bioconductor-biomart
-    - 'bioconductor-deseq2 >=1.9.11'
-    - bioconductor-genefilter
-    - bioconductor-geneplotter
-    - 'bioconductor-genomicranges >=1.19.6'
-    - 'bioconductor-iranges >=2.1.10'
-    - bioconductor-rsamtools
-    - r
+  host:
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-biomart >=2.48.0,<2.49.0'
+    - 'bioconductor-deseq2 >=1.32.0,<1.33.0'
+    - 'bioconductor-genefilter >=1.74.0,<1.75.0'
+    - 'bioconductor-geneplotter >=1.70.0,<1.71.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rsamtools >=2.8.0,<2.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
     - r-hwriter
     - r-rcolorbrewer
     - r-statmod
     - r-stringr
   run:
-    - bioconductor-biobase
-    - bioconductor-biocgenerics
-    - bioconductor-biocparallel
-    - bioconductor-biomart
-    - 'bioconductor-deseq2 >=1.9.11'
-    - bioconductor-genefilter
-    - bioconductor-geneplotter
-    - 'bioconductor-genomicranges >=1.19.6'
-    - 'bioconductor-iranges >=2.1.10'
-    - bioconductor-rsamtools
-    - r
+    - 'bioconductor-annotationdbi >=1.54.0,<1.55.0'
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-biocgenerics >=0.38.0,<0.39.0'
+    - 'bioconductor-biocparallel >=1.26.0,<1.27.0'
+    - 'bioconductor-biomart >=2.48.0,<2.49.0'
+    - 'bioconductor-deseq2 >=1.32.0,<1.33.0'
+    - 'bioconductor-genefilter >=1.74.0,<1.75.0'
+    - 'bioconductor-geneplotter >=1.70.0,<1.71.0'
+    - 'bioconductor-genomicranges >=1.44.0,<1.45.0'
+    - 'bioconductor-iranges >=2.26.0,<2.27.0'
+    - 'bioconductor-rsamtools >=2.8.0,<2.9.0'
+    - 'bioconductor-s4vectors >=0.30.0,<0.31.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
+    - r-base
     - r-hwriter
     - r-rcolorbrewer
     - r-statmod
     - r-stringr
 test:
   commands:
-    - '$R -e "library(''DEXSeq'')"'
+    - '$R -e "library(''{{ name }}'')"'
 about:
-  home: http://bioconductor.org/packages/release/bioc/html/DEXSeq.html
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
   license: 'GPL (>= 3)'
-  summary: 'The package is focused on finding differential exon usage using RNA-seq
-    exon counts between samples with different experimental designs. It provides functions
-    that allows the user to make the necessary statistical tests based on a model
-    that uses the negative binomial distribution to estimate the variance between
-    biological replicates and generalized linear models for testing. The package also
-    provides functions for the visualization and exploration of the results.'
+  summary: 'Inference of differential exon usage in RNA-Seq'
+  description: 'The package is focused on finding differential exon usage using RNA-seq exon counts between samples with different experimental designs. It provides functions that allows the user to make the necessary statistical tests based on a model that uses the negative binomial distribution to estimate the variance between biological replicates and generalized linear models for testing. The package also provides functions for the visualization and exploration of the results.'
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+extra:
+  identifiers:
+    - biotools:dexseq
+    - usegalaxy-eu:dexseq
+  parent_recipe:
+    name: bioconductor-dexseq
+    path: recipes/bioconductor-dexseq
+    version: 1.26.0
+

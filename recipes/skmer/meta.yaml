@@ -1,0 +1,38 @@
+{% set version = "3.1.0" %}
+
+package:
+  name: skmer
+  version: {{ version }}
+source:
+  url: https://github.com/shahab-sarmashghi/Skmer/archive/{{ version }}.tar.gz
+  sha256: 1df35e480814ca35f9fa48b6c57d2bde1ee816ae7b243799a2e345ac857fe90b
+build:
+  noarch: python
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - skmer=skmer.__main__:main
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - numpy
+    - scipy
+    - pandas
+  run:
+    - python
+    - numpy
+    - scipy
+    - pandas
+    - kmer-jellyfish ==2.3
+    - mash ==2.3
+    - seqtk ==1.3
+test:
+  commands:
+    - skmer --help
+about:
+  home: https://github.com/shahab-sarmashghi/Skmer
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: Assembly-free and alignment-free tool for estimating genomic distances between genome-skims

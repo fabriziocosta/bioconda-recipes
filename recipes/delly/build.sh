@@ -1,3 +1,5 @@
+#!/bin/sh
+
+make all CXX=$CXX CXXFLAGS="-D__STDC_FORMAT_MACROS -I${PREFIX}/include -L${PREFIX}/lib"
 mkdir -p $PREFIX/bin
-cp ${SRC_DIR}/delly_v0.7.6_CentOS5.4_x86_64bit $PREFIX/bin/delly
-chmod 0755 ${PREFIX}/bin/delly
+cp src/delly $PREFIX/bin

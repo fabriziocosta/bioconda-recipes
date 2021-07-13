@@ -1,21 +1,20 @@
 #!/bin/sh
-
 set -x -e
 
-export CC=${PREFIX}/bin/gcc
-export CXX=${PREFIX}/bin/g++
+mkdir -p ${PREFIX}/bin
 
-export INCLUDE_PATH="${PREFIX}/include"
-export LIBRARY_PATH="${PREFIX}/lib"
-export LD_LIBRARY_PATH="${PREFIX}/lib"
-export BOOST_INCLUDE_DIR=${PREFIX}/include
-export BOOST_LIBRARY_DIR=${PREFIX}/lib
-export LIBS='-lboost_system -lboost_program_options -lboost_filesystem -lboost_timer'
-
-export CXXFLAGS="-DUSE_BOOST -I${BOOST_INCLUDE_DIR} -L${BOOST_LIBRARY_DIR}"
-export LDFLAGS="-L${BOOST_LIBRARY_DIR} -lboost_filesystem -lboost_system"
+#importing matplotlib fails, likely due to X
+sed -i.bak "124d" configure.ac
 
 ./autogen.sh
-./configure --prefix=$PREFIX --with-boost=${PREFIX}
+export PYTHON_NOVERSION_CHECK="3.7.0"
+./configure --disable-silent-rules --disable-dependency-tracking --prefix=$PREFIX
 make
 make install
+
+# This directory isn't needed and confuses conda
+rm -rf $PREFIX/mkspecs
+
+cd ${PREFIX}/lib
+# Something is creating a symlink from ${PREFIX}/lib/\n
+find . -type l -not -name "??*" -ls -delete

@@ -1,12 +1,13 @@
 #!/bin/bash
-
+mkdir -p "$PREFIX/bin"
 export MACHTYPE=x86_64
 export BINDIR=$(pwd)/bin
-mkdir -p $BINDIR
+export L="${LDFLAGS}"
+mkdir -p "$BINDIR"
 (cd kent/src/lib && make)
+(cd kent/src/htslib && make)
 (cd kent/src/jkOwnLib && make)
 (cd kent/src/hg/lib && make)
 (cd kent/src/hg/mouseStuff/pslMrnaCover && make)
-mkdir -p $PREFIX/bin
-cp bin/pslMrnaCover $PREFIX/bin
-chmod +x $PREFIX/bin/pslMrnaCover
+cp bin/pslMrnaCover "$PREFIX/bin"
+chmod +x "$PREFIX/bin/pslMrnaCover"

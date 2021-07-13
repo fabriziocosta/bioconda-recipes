@@ -1,10 +1,7 @@
 #!/bin/bash
 
-#brew tap homebrew/science
+$PYTHON -m pip install . --ignore-installed --no-deps
 
-#brew install homebrew/science/prodigal
-
-#brew link --overwrite prodigal
-
-# install setup
-$PYTHON setup.py install
+# Load the CARD database JSON file
+python $PREFIX/bin/rgi load -i card-data/card.json
+rm -rf card-data

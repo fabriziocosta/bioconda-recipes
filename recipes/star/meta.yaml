@@ -1,22 +1,31 @@
-{% set version = "2.5.2b" %}
-{% set sha256 = "f88b992740807ab10f2ac3b83781bf56951617f210001fab523f6480d0b546d9" %}
+{% set version = "2.7.9a" %}
+{% set sha256 = "ff52c9d6daaa9fb7261efa3aa49ef6ce5262aa089b0762a3cbc751e81321050e" %}
 
 package:
   name: star
   version: {{ version }}
+
 source:
-  fn: {{ version }}.tar.gz
   url: https://github.com/alexdobin/STAR/archive/{{ version }}.tar.gz
   sha256: {{ sha256 }}
 
 build:
   number: 0
 
-about:
-  home: https://github.com/alexdobin/STAR
-  license: GPLv3
-  summary: An RNA-seq read aligner.
-
 test:
   commands:
     - STAR --version
+
+about:
+  home: https://github.com/alexdobin/STAR
+  license: GPLv3
+  license_file: LICENSE
+  summary: An RNA-seq read aligner.
+
+extra:
+  identifiers:
+    - biotools:star
+    - usegalaxy-eu:rna_starsolo
+    - usegalaxy-eu:rna_star
+  skip-lints:
+    - should_be_noarch_generic

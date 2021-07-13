@@ -1,23 +1,44 @@
-about:
-  home: http://weblogo.berkeley.edu/
-  license: MIT
-  summary: Web based application designed to generate sequence logos
+{% set version = "3.7.8" %}
+
 package:
   name: weblogo
-  version: 2.8.2
+  version: {{ version }}
+
 build:
-  number: 3
+  noarch: python
+  number: 0
 
 source:
-  url: http://weblogo.berkeley.edu/release/weblogo.2.8.2.tar.gz
-  fn: weblogo.2.8.2.tar.gz
-  md5: 12886e0f41757e32ac2823d0f990ce0c
+  url: https://github.com/WebLogo/weblogo/archive/{{ version }}.tar.gz
+  sha256: bc0d29b179b05a2d287eb2f37f556da48ab912c5612638694370e90879a0a676
 
 requirements:
+  host:
+    - python >=3.6
+    - pip
   run:
-    - perl-threaded
+    - python >=3.6
+    - numpy
+    - scipy
+    - ghostscript
 
 test:
+  imports:
+    - weblogo
+    - weblogo.seq_io
+    - weblogo.seq_io._nexus
+    - weblogo.utils
   commands:
-    - seqlogo 2>&1 | grep usage > /dev/null
-    - seqlogo -f foo.bar 2>&1 | grep "input filename" > /dev/null
+    - weblogo -h
+    - transformseq -h
+
+about:
+  home: https://github.com/WebLogo/weblogo
+  license: MIT
+  summary: 'WebLogo3 : Sequence Logos Redrawn'
+  license_family: MIT
+
+extra:
+  identifiers:
+    - biotools:weblogo
+    - doi:10.1101/gr.849004

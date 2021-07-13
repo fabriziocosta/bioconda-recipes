@@ -1,26 +1,19 @@
 #!/bin/bash
 
-export CFLAGS="-I$PREFIX/include"
-export LDFLAGS="-L$PREFIX/lib"
-export CPATH=${PREFIX}/include
+export CPP_INCLUDE_PATH=${PREFIX}/include
+export CPLUS_INCLUDE_PATH=${PREFIX}/include
+export CXX_INCLUDE_PATH=${PREFIX}/include
+export LIBRARY_PATH=${PREFIX}/lib
 
 mkdir -p $PREFIX/bin
 
-
-cd $SRC_DIR/codebase
-wget -O seqlib.tar.gz https://github.com/isovic/seqlib/archive/129d39a.tar.gz
-tar -xvf seqlib.tar.gz -C seqlib --strip-components 1
-wget -O argumentparser.tar.gz https://github.com/isovic/argumentparser/archive/72af976.tar.gz
-tar -xvf argumentparser.tar.gz -C argumentparser --strip-components 1
-
-cd $SRC_DIR
-
+make modules
 if [ "$(uname)" == "Darwin" ]; then
     echo "Installing GraphMap for OSX."
-    make mac
-    cp bin/Mac/graphmap $PREFIX/bin
+    make mac GCC=$CXX GCC_MAC=$CXX
+    cp bin/Mac/graphmap $PREFIX/bin/graphmap2
 else
     echo "Installing GraphMap for UNIX/Linux."
-    make
-    cp bin/Linux-x64/graphmap $PREFIX/bin
+    make GCC=$CXX LD_FLAGS="$LDFLAGS -static-libgcc -static-libstdc++ -m64 -ffreestanding"
+    cp bin/Linux-x64/graphmap2 $PREFIX/bin
 fi

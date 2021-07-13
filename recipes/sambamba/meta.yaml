@@ -1,28 +1,40 @@
+{% set version='0.8.0' %}
+
 package:
   name: sambamba
-  version: '0.6.5'
+  version: {{ version }}
 
 source:
-  fn: sambamba_v0.6.5.tar.bz2
-  url: https://github.com/lomereiter/sambamba/releases/download/v0.6.5/sambamba_v0.6.5_linux.tar.bz2 # [linux]
-  md5: 697b8903722ec0225f378547b7bb9973 # [linux]
-  url: https://github.com/lomereiter/sambamba/releases/download/v0.6.5/sambamba_v0.6.5_osx.tar.bz2 # [osx]
-  md5: b08b8858dc6ac6b1d20f65e715845cbb # [osx]
+  git_url: https://github.com/biod/sambamba
+  git_revision: {{version}}
+  sha256: b3d9df34208c0b2d17153de0839116d8794c2d0c4bd846d806eafaf398e66663
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:
+    - make
+    - {{ compiler('c') }}
+  host:
+    - ldc >=1.17.0
+    - bzip2
+    - htslib
+    - zlib
+    - xz
   run:
-    - samtools # required for mpileup
-    - bcftools # required for mpileup
+    - {{ pin_compatible('ldc', max_pin='x.x') }}
 
 test:
   commands:
-    - sambamba view
+    - sambamba view --help
 
 about:
-  home: https://github.com/lomereiter/sambamba
+  home: https://github.com/biod/sambamba
   license: GPLv2
+  license_file: LICENSE
   summary: Tools for working with SAM/BAM data
+
+extra:
+  skip-lints:
+    - uses_vcs_url

@@ -1,34 +1,53 @@
+{% set version = "1.66.0" %}
+{% set name = "made4" %}
+{% set bioc = "3.13" %}
+
 package:
-  name: bioconductor-made4
-  version: 1.44.0
+  name: 'bioconductor-{{ name|lower }}'
+  version: '{{ version }}'
 source:
-  fn: made4_1.44.0.tar.gz
-  url: https://bioarchive.galaxyproject.org/made4_1.44.0.tar.gz
-  md5: 68c0e762f8fca1b702a66b14df1e7f66
+  url:
+    - 'https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz'
+    - 'https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz'
+    - 'https://depot.galaxyproject.org/software/bioconductor-{{ name }}/bioconductor-{{ name }}_{{ version }}_src_all.tar.gz'
+  md5: b6e98bb2cabe2f7f2879d4c131661219
 build:
   number: 0
   rpaths:
     - lib/R/lib/
     - lib/
+  noarch: generic
+# Suggests: affy, BiocStyle, knitr, rmarkdown
 requirements:
-  build:
-    - r
+  host:
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
     - r-ade4
-    - r-rcolorbrewer
+    - r-base
     - r-gplots
+    - r-rcolorbrewer
     - r-scatterplot3d
   run:
-    - r
+    - 'bioconductor-biobase >=2.52.0,<2.53.0'
+    - 'bioconductor-summarizedexperiment >=1.22.0,<1.23.0'
     - r-ade4
-    - r-rcolorbrewer
+    - r-base
     - r-gplots
+    - r-rcolorbrewer
     - r-scatterplot3d
 test:
   commands:
-    - '$R -e "library(''made4'')"'
+    - '$R -e "library(''{{ name }}'')"'
 about:
-  home: http://bioconductor.org/packages/release/bioc/html/made4.html
+  home: 'https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html'
   license: Artistic-2.0
-  summary: 'Multivariate data analysis and graphical display of microarray data. Functions
-    include between group analysis and coinertia analysis. It contains functions that
-    require ADE4.'
+  summary: 'Multivariate analysis of microarray data using ADE4'
+  description: 'Multivariate data analysis and graphical display of microarray data. Functions include for supervised dimension reduction (between group analysis) and joint dimension reduction of 2 datasets (coinertia analysis). It contains functions that require R package ade4.'
+extra:
+  identifiers:
+    - biotools:made4
+  parent_recipe:
+    name: bioconductor-made4
+    path: recipes/bioconductor-made4
+    version: 1.54.0
+

@@ -1,32 +1,42 @@
-{% set version = "1.3.1" %}
+{% set version = "1.13" %}
 
 package:
   name: samtools
   version: {{ version }}
 
 build:
-  number: 4
-  skip: False
+  number: 0
 
 source:
-  fn: samtools-{{ version }}.tar.bz2
   url: https://github.com/samtools/samtools/releases/download/{{ version }}/samtools-{{ version }}.tar.bz2
-  md5: a7471aa5a1eb7fc9cc4c6491d73c2d88
+  sha256: 616ca2e051cc8009a1e9c01cfd8c7caf8b70916ddff66f3b76914079465f8c60
 
 requirements:
   build:
-  - ncurses {{CONDA_NCURSES}}*
-  - zlib
-  - curl
+    - make
+    - {{ compiler('c') }}
+  host:
+    - htslib
+    - ncurses
+    - zlib
   run:
-  - ncurses {{CONDA_NCURSES}}*
-  - zlib
-  - curl
+    - htslib
+    - ncurses
+    - zlib
 
 about:
   home: https://github.com/samtools/samtools
   license: MIT
+  license_file: LICENSE
   summary: Tools for dealing with SAM, BAM and CRAM files
+
 test:
   commands:
     - samtools --help
+    # test if https protocol works, if it doesnt samtools will fail with "Protocol not supported"
+    - samtools view 'https://example.com' 2>&1 | grep 'fail to read the header' -q
+
+extra:
+  identifiers:
+    - biotools:samtools
+    - usegalaxy-eu:samtools_flagstat

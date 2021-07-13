@@ -1,21 +1,21 @@
 package:
   name: mageck
-  version: "0.5.4"
+  version: "0.5.9.4"
 
 source:
-  git_url: https://bitbucket.org/liulab/mageck.git
-  git_rev: v0.5.4
+  url: https://bitbucket.org/liulab/mageck/get/v0.5.9.4.tar.gz
+  sha256: 3fc7a532aff41fffae7229e61910cd89b1bbc2d533b7d904c33fcb1fdb2d7573
 
 build:
   number: 1
-  skip: False
 
 requirements:
   build:
+    - {{ compiler('cxx') }}
+    - make
+  host:
     - python
-    - numpy
-    - scipy
-    - ipython
+    - pip
   run:
     - python
     - numpy
@@ -24,9 +24,11 @@ requirements:
 
 test:
   commands:
-    - mageck --help > /dev/null
+    - mageck --help
+    - RRA
+    - mageckGSEA
 
 about:
   home: http://mageck.sourceforge.net
   license: BSD License
-  summary: Model-based Analysis of Genome-wide CRISPR-Cas9 Knockout.
+  summary: MAGeCK (Model-based Analysis of Genome-wide CRISPR-Cas9 Knockout), an algorithm to process, QC, analyze and visualize CRISPR screening data.
