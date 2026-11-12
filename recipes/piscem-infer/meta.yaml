@@ -1,0 +1,42 @@
+{% set version = "0.8.1" %}
+
+package:
+  name: piscem-infer
+  version: {{ version }}
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("piscem-infer", max_pin="x.x") }}
+    
+source:
+  url: https://github.com/COMBINE-lab/piscem-infer/archive/v{{ version }}.tar.gz
+  sha256: 97b020128cea8cb48364ef6a09ede4b7b3cd66bacd408cc16413a909ad197722
+
+requirements:
+  build:
+    - cmake <4.0.0
+    - autoconf
+    - make
+    - zlib
+    - bzip2 
+    - {{ compiler('rust') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
+    - pkg-config
+  host:
+    - zlib
+    - bzip2
+    - tapi # [osx and x86_64]
+  run:
+
+test:
+  commands:
+    - piscem-infer --help
+
+about:
+  home: https://github.com/COMBINE-lab/piscem-infer
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: piscem-infer is a flexible tool to perform target quantification from bulk-sequencing data

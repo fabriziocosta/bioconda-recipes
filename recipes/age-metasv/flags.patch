@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index b19b564..67df1d2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ VERSION = v0.4
+-DEFAULT_FLAGS = -DAGE_VERSION=\"$(VERSION)\" -DAGE_TIME -static -O3
+-CXX	= g++ -fopenmp -DOMP $(DEFAULT_FLAGS)
++DEFAULT_FLAGS = -DAGE_VERSION=\"$(VERSION)\" -DAGE_TIME -O3
++CXX	?= $(CXX) -fopenmp -DOMP $(DEFAULT_FLAGS)
+ 
+ MESS = "Compiling with parallel support."
+ ifeq ($(OMP),no)
+@@ -29,7 +29,7 @@ mess:
+ 	@echo ""
+ 
+ age_align: $(OBJS)
+-	$(CXX) -o $@ $(OBJS) -static
++	$(CXX) -o $@ $(OBJS)
+ 
+ $(OBJDIR)/%.o: %.cpp
+ 	@mkdir -p $(OBJDIR)

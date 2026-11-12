@@ -1,0 +1,50 @@
+{% set name = "grz-cli" %}
+{% set version = "3.0.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/grz_cli-{{ version }}.tar.gz
+  sha256: 671e23479be083281248c1077cbd6e0362d13250ca0ff354bb3a86a348056e1f
+
+build:
+  entry_points:
+    - grz-cli = grz_cli.cli:main
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  host:
+    - python >=3.12
+    - hatchling
+    - pip
+  run:
+    - python >=3.12
+    - packaging >=23,<27
+    - grz-common >=4.0.3,<5
+
+test:
+  imports:
+    - grz_cli
+  commands:
+    - pip check  # please don't remove, to ensure pyproject.toml dependencies respected
+    - grz-cli --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/BfArM-MVH/grz-tools
+  summary: "Tool for validation, encryption and upload of MV submissions to GDCs."
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - tedil
+    - hoeze

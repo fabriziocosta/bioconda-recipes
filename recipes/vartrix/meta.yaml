@@ -1,0 +1,47 @@
+{% set name = "vartrix" %}
+{% set version = "1.1.23" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/10XGenomics/vartrix/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 88f14e2b503f2439ea3d33c478fdf9898e66ba0bbc3165b92158aaaa153e212b
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('rust') }}
+    - cargo-bundle-licenses
+    - clang <22  # [osx]
+    - clang  # [linux]
+    - libclang
+    - make
+    - pkg-config
+  host:
+    - zlib
+
+test:
+  commands:
+    - vartrix -h
+
+about:
+  home: "https://github.com/10XGenomics/vartrix"
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "VarTrix is a software tool for extracting single cell variant information from 10x Genomics single cell data."
+  dev_url: "https://github.com/10XGenomics/vartrix"
+  doc_url: "https://github.com/10XGenomics/vartrix/blob/v{{ version }}/README.md"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64

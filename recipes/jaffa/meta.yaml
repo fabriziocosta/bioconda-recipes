@@ -1,0 +1,57 @@
+{% set name = "jaffa" %}
+{% set version = "2.5" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/Oshlack/JAFFA/releases/download/version-{{ version }}/JAFFA-version-{{ version }}.tar.gz
+  sha256: d4123facd165f985a290221366b7750b522b29876387d2491c57000c1865699e
+  patches:
+    - jaffa.patch
+
+build:
+  number: 1
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+  - {{ compiler('cxx') }}
+  - {{ stdlib('c') }}
+  run:
+  - bpipe
+  - oases
+  - velvet
+  - trimmomatic
+  # Pinning to 1.1 is required as JAFFA does not know about new samtools sort syntax
+  - samtools ==1.1
+  - bowtie2
+  - ucsc-blat
+  - fastx_toolkit
+  - bbmap
+  - bioconductor-iranges
+  - minimap2
+
+# Testing JAFFA is impossible without many resource files.
+#test:
+#  commands:
+#  - jaffa-direct || true
+#  - jaffa-assembly || true
+#  - jaffa-hybrid || true
+
+about:
+  home: "https://github.com/Oshlack/JAFFA"
+  summary: >
+    JAFFA is a multi-step pipeline that takes either raw RNA-Seq reads, or pre-assembled transcripts then searches
+    for gene fusions.  This package contains the wrappers jaffa-direct, jaffa-assembly, and jaffa-hybrid.
+    You can pass the "refSeq" parameter in the environment variables JAFFA_REF_BASE. Otherwise, pass any paramters
+    to the wrappers as you would to the bpipe JAFFA_{method} call in the manual.
+  license: "GPL-3.0-or-later"
+  license_family: GPL
+  license_file: LICENSE
+
+extra:
+  skip-lints:
+    - missing_tests

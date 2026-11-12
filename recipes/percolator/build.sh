@@ -1,10 +1,9 @@
 #!/bin/bash
+set -ex
 
-mkdir percobuild && cd percobuild
-cmake -DTARGET_ARCH=x86_64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DXML_SUPPORT=ON -DCMAKE_PREFIX_PATH="$PREFIX;$PREFIX/lib" $SRC_DIR
-make && make install
-cd ..
+bash admin/builders/conda_build.sh
 
-mkdir converterbuild && cd converterbuild 
-cmake -DTARGET_ARCH=x86_64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DBOOST_ROOT=$PREFIX -DBOOST_LIBRARYDIR=$PREFIX/lib -DSERIALIZE="TokyoCabinet" -DCMAKE_PREFIX_PATH=$PREFIX $SRC_DIR/src/converters
-make && make install
+# Test input for the package test. bioconda repeats the test in a container
+# without the source, so the file is installed with the package.
+mkdir -p "${PREFIX}/testdata"
+cp -f data/percolator/tab/percolatorTab "${PREFIX}/testdata/percolatorTab"

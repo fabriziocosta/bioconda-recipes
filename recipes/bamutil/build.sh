@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
+set -xe
 
-VERSION=1.0.14
-wget -O libStatGen-v$VERSION.tar.gz https://github.com/statgen/libStatGen/archive/v$VERSION.tar.gz
-tar -xzvpf libStatGen-v$VERSION.tar.gz
-make LIB_PATH_GENERAL=./libStatGen-$VERSION
-make install INSTALLDIR=$PREFIX LIB_PATH_GENERAL=./libStatGen-$VERSION
-mkdir -p $PREFIX/bin/
-mv $PREFIX/bam $PREFIX/bin/
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
+export CXXFLAGS="${CXXFLAGS} -O3"
+export CFLAGS="${CFLAGS} -O3"
+
+case $(uname -m) in
+    aarch64)
+	export CXXFLAGS="${CXXFLAGS} -march=armv8-a"
+	;;
+    arm64)
+	export CXXFLAGS="${CXXFLAGS} -march=armv8.4-a"
+	;;
+    x86_64)
+	export CXXFLAGS="${CXXFLAGS} -march=x86-64-v3"
+	;;
+esac
+
+cd bamUtil
+
+make -j"${CPU_COUNT}" \
+    CXX="${CXX} ${CXXFLAGS} ${CPPFLAGS} ${LDFLAGS} -std=c++11" \
+    CC="${CC} ${CFLAGS} ${CPPFLAGS} ${LDFLAGS}" \
+    USER_WARNINGS='-Wno-strict-overflow' \
+    INSTALLDIR="${PREFIX}/bin" \
+    install

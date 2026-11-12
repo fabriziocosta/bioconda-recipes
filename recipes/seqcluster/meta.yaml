@@ -1,35 +1,47 @@
-about:
-  home: https://github.com/lpantano/seqclsuter
-  license: MIT
-  summary: small RNA analysis from NGS data
+{% set tag="v1.2.9" %}
 
 package:
   name: seqcluster
-  version: '1.2.4a'
+  version: '1.2.9'
 
 source:
-  git_url: https://github.com/lpantano/seqcluster
-  git_rev: 9f9f886e6c45b31121a75d1f47a4443dfaa0e96a
+  url: https://github.com/lpantano/seqcluster/archive/{{ tag  }}.tar.gz
+  sha256: 907549b6346dc023e305e999172d1ac81e5ec1fa0b8f7958bc442ba77ef5e9af
+
 build:
   number: 0
-  skip: True # [not py27]
+  noarch: python
 
 requirements:
-  build:
+  host:
     - python
     - setuptools
-    - gcc
   run:
     - python
+    - six
     - pyyaml
-    - pysam >=0.8.1
+    - pysam
+    - scipy
     - pandas
     - pybedtools
-    - progressbar
-    - matplotlib
+    - progressbar2
+    - biopython
+    - mirtop
+    - viennarna
 
 test:
   commands:
     - seqcluster cluster -h
   imports:
     - seqcluster
+
+about:
+  home: https://github.com/lpantano/seqclsuter
+  license: MIT
+  summary: small RNA analysis from NGS data
+
+extra:
+  identifiers:
+    - biotools:seqcluster
+  skip-lints:
+    - should_be_noarch

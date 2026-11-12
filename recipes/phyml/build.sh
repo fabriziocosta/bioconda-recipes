@@ -1,0 +1,51 @@
+#!/bin/bash
+set -xe
+
+export INCLUDE_PATH="${PREFIX}/include"
+export LIBRARY_PATH="${PREFIX}/lib"
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export CFLAGS="${CFLAGS} -O3 -fomit-frame-pointer -funroll-loops -Wno-implicit-function-declaration -I${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
+export LC_ALL="en_US.UTF-8"
+
+# PhyML builds different binaries depending on configure flags.
+# We build
+#   - phyml (enable-phyml),
+#   - phyml-mpi (enable-phyml-mpi)
+#   - phyrex
+#   - rf
+# but not
+#   - phyml-beagle -- doesn't compile in this release
+#   - phytime -- io.c: undefined reference to 'PHYREX_Get_Posterior'
+
+case $(uname -m) in
+	x86_64)
+		ARCH_OPTS="-msse4.1"
+		;;
+	*)
+		ARCH_OPTS=""
+		;;
+esac
+
+cp -f ${BUILD_PREFIX}/share/gnuconfig/config.*
+
+# needed to fix version
+autoreconf -if
+
+# Adding -v to make breaks compilation on Microsoft Azure CI
+# phyml-mpi error: mpi_boot.c:215:100: error: 'struct __Optimiz' has no member named 'opt_bl'
+# phytime build error: utilities.c: undefinied reference to 'EVOLVE_Seq'
+for binary in phyrex phyml phyml-mpi rf; do
+	echo ${binary}
+	./configure \
+		--disable-dependency-tracking \
+		--enable-silent-rules \
+		--disable-native \
+		--prefix="${PREFIX}" \
+		--enable-${binary} \
+		CC="${CC}" CPPFLAGS="${CPPFLAGS}" \
+		LDFLAGS="${LDFLAGS}" CFLAGS="${CFLAGS} ${ARCH_OPTS}"
+	make clean
+	make CFLAGS="${CFLAGS} ${ARCH_OPTS}" -j"${CPU_COUNT}"
+	make install
+done

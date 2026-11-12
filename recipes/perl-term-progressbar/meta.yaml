@@ -1,0 +1,45 @@
+{% set name = "perl-term-progressbar" %}
+{% set version = "2.23" %}
+{% set sha256 = "defc03fb9f4ac1c9df1359d312bff3c0865ddefbf3aba64cd42a69a86215d49d" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://cpan.metacpan.org/authors/id/M/MA/MANWAR/Term-ProgressBar-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - make
+  host:
+    - perl
+    - perl-test-exception
+    - perl-class-methodmaker
+    - perl-file-temp
+    - perl-test-warnings
+    - perl-extutils-makemaker
+    - perl-capture-tiny
+    - perl-carp
+  run:
+    - perl
+    - perl-class-methodmaker
+    - perl-carp
+
+test:
+  imports:
+    - Term::ProgressBar
+    - Term::ProgressBar::IO
+
+about:
+  home: "https://metacpan.org/pod/Term::ProgressBar"
+  license: "Perl_5"
+  summary: "Provide a progress meter on a standard terminal."
+  doc_url: "https://metacpan.org/pod/Term::ProgressBar"

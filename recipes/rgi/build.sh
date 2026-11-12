@@ -1,10 +1,15 @@
 #!/bin/bash
 
-#brew tap homebrew/science
+$PYTHON -m pip install . --no-build-isolation --no-deps --no-cache-dir
 
-#brew install homebrew/science/prodigal
+# Load the CARD database JSON file
+python $PREFIX/bin/rgi load -i card-data/card.json
+rm -rf card-data
 
-#brew link --overwrite prodigal
-
-# install setup
-$PYTHON setup.py install
+# Makesure blast/diamond database is built
+mkdir -p rgi-temp
+cd rgi-temp
+wget --quiet --output-document=homolog.fasta https://raw.githubusercontent.com/arpcard/rgi/master/tests/inputs/homolog.fasta
+python $PREFIX/bin/rgi main -i homolog.fasta -o output --debug -a diamond --clean
+cd ..
+rm -rf rgi-temp

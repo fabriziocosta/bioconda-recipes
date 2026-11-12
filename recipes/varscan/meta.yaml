@@ -1,19 +1,36 @@
-about:
-    home: http://dkoboldt.github.io/varscan/
-    license: The Non-Profit Open Software License version 3.0 (NPOSL-3.0)
-    summary: variant detection in massively parallel sequencing data
+{% set name = "varscan" %}
+{% set version = "2.4.6" %}
+{% set sha256hash = "e827230b47a96cab035c5c7178e5089921a1e1c8d1e4836a6b02ff88e3a4c2ab" %}
+
 package:
-    name: varscan
-    version: 2.4.2
+  name: {{ name|lower }}
+  version: {{ version }}
+
+about:
+  home: http://dkoboldt.github.io/varscan/
+  license: NPOSL-3.0
+  summary: variant detection in massively parallel sequencing data
+
 build:
-  number: 0
+  number: 1
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage(name|lower, max_pin="x.x") }}
+
 source:
-    fn: VarScan-2.4.2.jar
-    url: https://github.com/dkoboldt/varscan/raw/master/VarScan.v2.4.2.jar
+  url: https://github.com/dkoboldt/varscan/raw/master/VarScan.v{{ version }}.jar
+  sha256: {{ sha256hash }}
+
 requirements:
   build:
   run:
-    - java-jdk
+    - openjdk
+    - zlib
+
 test:
-    commands:
-      - varscan mpileup2cns --help
+  commands:
+    - varscan mpileup2cns --help
+
+extra:
+  identifiers:
+    - biotools:varscan

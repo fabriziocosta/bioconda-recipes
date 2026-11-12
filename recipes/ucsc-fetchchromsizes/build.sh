@@ -1,5 +1,4 @@
 #!/bin/bash
+set -xe
 
-mkdir -p $PREFIX/bin
-cp kent/src/utils/userApps/fetchChromSizes $PREFIX/bin
-chmod +x $PREFIX/bin/fetchChromSizes
+install -v -m 0755 kent/src/utils/userApps/fetchChromSizes "${PREFIX}/bin"

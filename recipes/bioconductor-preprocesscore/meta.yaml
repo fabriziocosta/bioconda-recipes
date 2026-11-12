@@ -1,24 +1,60 @@
+{% set version = "1.72.0" %}
+{% set name = "preprocessCore" %}
+{% set bioc = "3.22" %}
+
 package:
-  name: bioconductor-preprocesscore
-  version: 1.34.0
+  name: bioconductor-{{ name|lower }}
+  version: '{{ version }}'
+
 source:
-  fn: preprocessCore_1.34.0.tar.gz
-  url: https://bioarchive.galaxyproject.org/preprocessCore_1.34.0.tar.gz
-  md5: 845eddebdf2c68a93103622ac9cc31a1
+  url:
+    - https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/{{ name }}_{{ version }}.tar.gz
+    - https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/Archive/{{ name }}/{{ name }}_{{ version }}.tar.gz
+    - https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz
+    - https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz
+  md5: c288c12d10a9a8b02904140e08aa97bd
+
 build:
   number: 0
   rpaths:
     - lib/R/lib/
     - lib/
+  run_exports: '{{ pin_subpackage("bioconductor-preprocesscore", max_pin="x.x") }}'
+
 requirements:
   build:
-    - r
+    - {{ compiler('c') }}
+    - automake
+    - make
+  host:
+    - r-base
+    - libblas
+    - liblapack
+    - zlib
+    - liblzma-devel
   run:
-    - r
+    - r-base
+
 test:
   commands:
-    - '$R -e "library(''preprocessCore'')"'
+    - $R -e "library('{{ name }}')"
+
 about:
-  home: http://bioconductor.org/packages/release/bioc/html/preprocessCore.html
-  license: 'LGPL (>= 2)'
-  summary: 'A library of core preprocessing routines'
+  home: https://bioconductor.org/packages/{{ bioc }}/bioc/html/{{ name }}.html
+  license: LGPL (>= 2)
+  summary: A collection of pre-processing functions
+  description: A library of core preprocessing routines.
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/LGPL-3'
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:preprocesscore
+    - doi:10.1038/nmeth.3252
+  parent_recipe:
+    name: bioconductor-preprocesscore
+    path: recipes/bioconductor-preprocesscore
+    version: 1.42.0
+

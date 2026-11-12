@@ -1,44 +1,56 @@
+{% set name = "CrossMap" %}
+{% set version = "0.7.4" %}
+{% set sha256 = "c081dedba70b62ac6f1763f4d50d6e6754afdff4e6951d3f19c1f891905d4493" %}
+
 package:
-  name: crossmap
-  version: "0.2.2"
+  name: {{ name|lower }}
+  version: {{ version }}
+
 source:
-  url: http://sourceforge.net/projects/crossmap/files/CrossMap-0.2.2.tar.gz
-  fn: CrossMap-0.2.2.tar.gz
-  patches:
-    - setup_remove_deps.diff
+  url: https://github.com/liguowang/CrossMap/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-    number: 3
-
-    # CrossMap is very particular about Python version.
-    skip: True # [not py27 or osx]
+  number: 0
+  noarch: python
+  entry_points:
+    - CrossMap = cmmodule:crossmap
+  run_exports:
+    - {{ pin_subpackage('crossmap', max_pin="x.x") }}
 
 requirements:
-  build:
-    - python
-    - cython
-    - numpy
+  host:
+    - python >=3.8
+    - pip
     - setuptools
-    - nose
-    - pysam ==0.6
-    - bx-python
   run:
-    - python
-    - cython
+    - python >=3.8
     - numpy
-    - setuptools
-    - samtools ==0.1.19
-    - nose
-    - pysam ==0.6
+    - pysam
     - bx-python
+    - pybigwig
     - ucsc-wigtobigwig
 
 test:
   commands:
-    - CrossMap.py bed
-    - CrossMap.py vcf
+    - CrossMap bed -h
+    - CrossMap vcf -h
 
 about:
-  home: http://crossmap.sourceforge.net
-  license: GPL
-  summary: "Convert genomic coordiates between assemblies"
+  home: "https://crossmap.sourceforge.net"
+  license: "GPL-3.0-or-later"
+  license_family: GPL3
+  license_file: "LICENSE.txt"
+  summary: "CrossMap is a program for convenient conversion of genome coordinates and genomeannotation files between assemblies."
+  dev_url: "https://github.com/liguowang/CrossMap"
+  doc_url: "https://crossmap.readthedocs.io/en/latest"
+
+extra:
+  identifiers:
+    - usegalaxy-eu:crossmap_bam
+    - usegalaxy-eu:crossmap_bed
+    - usegalaxy-eu:crossmap_vcf
+    - usegalaxy-eu:crossmap_wig
+    - usegalaxy-eu:crossmap_gff
+    - doi:10.1093/bioinformatics/btt730
+    - biotools:crossmap

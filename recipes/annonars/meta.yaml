@@ -1,0 +1,57 @@
+{% set version = "0.45.3" %}
+
+package:
+  name: annonars
+  version: {{ version }}
+
+build:
+  number: 0
+  skip: True # [osx]
+  run_exports:
+    - {{ pin_subpackage("annonars", max_pin="x.x") }}
+
+source:
+  url: https://github.com/varfish-org/annonars/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: f5efe9b1125481f129bee5c43984cbd16832efd203cd561f7d97699e05e8fc9c
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('rust') }}
+    - {{ stdlib('c') }}
+    - cmake
+    - make
+    - cargo-bundle-licenses
+    - pkg-config
+    - make
+    - cmake
+  host:
+    - clangdev
+    - llvmlite
+    - openssl
+    - protobuf
+    - libprotobuf
+    - zlib
+    - sqlite
+  run:
+    - sqlite
+
+test:
+  commands:
+    - annonars --help
+
+about:
+  home: https://github.com/varfish-org/annonars
+  license: Apache-2.0
+  license_file: LICENSE.txt
+  summary: 'Genome annotation based on Rust and RocksDB.'
+  dev_url: "https://github.com/varfish-org/annonars"
+  doc_url: "https://github.com/varfish-org/annonars/blob/v{{ version }}/README.md"
+
+extra:
+  recipe-maintainers:
+    - holtgrewe
+    - tedil
+  additional-platforms:
+    - linux-aarch64

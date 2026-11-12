@@ -1,11 +1,5 @@
 #!/bin/bash
 
-mkdir -p $PREFIX/bin
 make
-
-binaries="\
- DASqv  \
- DAStrim
-"
-
-for i in $binaries; do cp $i $PREFIX/bin && chmod +x $PREFIX/bin/$i; done
+install -d "${PREFIX}/bin"
+make install DEST_DIR="${PREFIX}/bin/"

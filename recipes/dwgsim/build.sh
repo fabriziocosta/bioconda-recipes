@@ -1,37 +1,12 @@
-#!/bin/sh
-set -x -e
+#!/bin/bash
+set -x -e -o pipefail
+if [[ ${target_platform} == "linux-aarch64" ]]; then
+  sed -i.bak '4c\DFLAGS=         -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_USE_KNETFILE -DPACKAGE_VERSION=\\\\\\\"${PACKAGE_VERSION}\\\\\\\" -Dunreachable=dwgsim_unreachable' Makefile
+  sed -i.bak 's/unreachable/dwgsim_unreachable/g' src/dwgsim.c
+  sed -i.bak '8a CFLAGS += $(DFLAGS)' samtools/Makefile
+fi
+make CC="${CC}" CFLAGS="${CPPFLAGS} ${CFLAGS} -g -Wall -O3 ${LDFLAGS}" LIBCURSES="-lncurses" -j"${CPU_COUNT}"
 
-export CC=${PREFIX}/bin/gcc
-export CXX=${PREFIX}/bin/g++
+mkdir -p "${PREFIX}/bin"
 
-export INCLUDE_PATH="${PREFIX}/include"
-export LIBRARY_PATH="${PREFIX}/lib"
-export LD_LIBRARY_PATH="${PREFIX}/lib"
-
-export LDFLAGS="-L${PREFIX}/lib"
-export CPPFLAGS="-I${PREFIX}/include -I${PREFIX}/include/bam"
-
-rm -rf samtools
-#We're installing this from conda
-cp -rf ${PREFIX}/include/bam ./samtools
-make
-
-
-mkdir -p $PREFIX/bin
-mkdir -p $PREFIX/scripts
-mkdir -p $PREFIX/config
-
-cp dwgsim $PREFIX/bin
-cp dwgsim_eval $PREFIX/bin
-cp scripts/dwgsim_eval_plot.py $PREFIX/bin
-
-cd scripts
-
-mkdir -p perl-build
-cp ${RECIPE_DIR}/Build.PL perl-build
-cp *.pl perl-build
-
-cd perl-build
-perl ./Build.PL
-./Build manifest
-./Build install --installdirs site
+install -v -m 755 dwgsim dwgsim_eval "${PREFIX}/bin"

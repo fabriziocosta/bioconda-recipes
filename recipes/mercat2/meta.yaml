@@ -1,0 +1,61 @@
+{% set name = "mercat2" %}
+{% set version = "1.5.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: 76cf97a6d0adc0a6343c11251a3a2ef6ed7bcda90bab93ecda9442638df89dde
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . -vv"
+  run_exports:
+    - {{ pin_subpackage('mercat2', max_pin="x") }}
+
+requirements:
+  host:
+    - pip
+    - python >=3.9
+    - setuptools
+  run:
+    - python >=3.9
+    - fastqc
+    - fastp
+    - scikit-learn
+    - scikit-bio ==0.5.7
+    - scipy ==1.8.1
+    - python-kaleido
+    - hydrampp
+    - configargparse
+    - humanize
+    - plotly
+    - psutil
+    - dominate
+    - metaomestats
+    - matplotlib-base
+    - pyrodigal
+
+
+test:
+  imports:
+    - mercat2_lib
+  commands:
+    - mercat2.py --help
+
+about:
+  home: "https://github.com/raw-lab/mercat2"
+  license: "CC BY-NC 4.0"
+  license_family: "OTHER"
+  license_file: "LICENSE.txt"
+  summary: "versatile k-mer counter and diversity estimator for database independent property analysis (DIPA) for multi-omic analysis"
+  doc_url: "https://github.com/raw-lab/mercat2"
+  dev_url: "https://github.com/raw-lab/mercat2"
+
+extra:
+  recipe-maintainers:
+    - decrevi
+    - raw-lab

@@ -1,34 +1,53 @@
+{% set name = "RepeatMasker" %}
+{% set version = "4.2.4" %}
+{% set sha256 = "7407b42909c64b7ae080efb737f3f725327be81ace1ec0cd9dc13c4a503885d7" %}
+
 package:
-    name: repeatmasker
-    version: 4.0.6
+  name: {{ name|lower }}
+  version: {{ version }}
+
 source:
-    fn:  RepeatMasker-open-4-0-6.tar.gz
-    url: http://www.repeatmasker.org/RepeatMasker-open-4-0-6.tar.gz
-    md5: 324bcb707b23b06adfde34704a8ec0c4
+  url: https://www.repeatmasker.org/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-  number: 4
-  detect_binary_files_with_prefix: False
-  binary_has_prefix_files:
-    - share/RepeatMasker/Libraries/RepeatMasker.lib.nin
-    - share/RepeatMasker/Libraries/RepeatPeps.lib.pin
-  has_prefix_files:
-    - bin/RepeatMasker
-  skip: True # [ not linux ]
+  number: 0
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage('repeatmasker', max_pin="x") }}
 
 requirements:
-  build:
-    - rmblast
+  host:
+    - perl
+    - rmblast >=2.17.0
+    - h5py
+    - trf # required for config
+    - famdb # required for config
   run:
-    - rmblast
+    - rmblast >=2.17.0
     - hmmer
     - trf
-    - perl-threaded
-    - perl-text-soundex
+    - perl
+    - h5py
+    - gzip  # [osx]
+    - wget
+    - famdb
+
 test:
-    commands:
-        - RepeatMasker | grep 'RepeatMasker - Mask repetitive DNA' > /dev/null
+  commands:
+    - RepeatMasker | grep "RepeatMasker - Mask repetitive DNA" > /dev/null
+
 about:
-    home: http://www.repeatmasker.org
-    license: Open Software License v2.1
-    summary: RepeatMasker is a program that screens DNA sequences for interspersed repeats and low complexity DNA sequences.
+  home: "https://www.repeatmasker.org/RepeatMasker"
+  license: "Open Software License v2.1"
+  summary: "RepeatMasker is a program that screens DNA sequences for interspersed repeats and low complexity DNA sequences."
+  dev_url: "https://github.com/Dfam-consortium/RepeatMasker"
+  doc_url: "https://www.repeatmasker.org/RepeatMasker"
+
+extra:
+  identifiers:
+    - biotools:repeatmasker
+    - usegalaxy-eu:repeatmasker_wrapper
+  recipe-maintainers:
+    - mencian
+    - TobyBaril

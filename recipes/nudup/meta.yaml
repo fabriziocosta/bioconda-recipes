@@ -1,29 +1,34 @@
+{% set version = "2.3.3" %}
+
 package:
   name: nudup
-  version: "2.2_post2016104"
+  version: {{ version }}
 
 source:
-  git_rev: 740d9fe439dd8917605a56483a8796b377eb24c6
-  git_url: https://github.com/nugentechnologies/nudup.git
+  url: https://github.com/nugentechnologies/nudup/archive/{{ version }}.tar.gz
+  sha256: daa4d26380275951ec5675d5a7f0432fa89e4ead868bae2d0eeabd1cb7449736
 
 build:
-  number: 0
-  skip: True # [win or py3k]
+  noarch: python
+  number: 2
+  script: mkdir -p ${PREFIX}/bin && cp nudup.py ${PREFIX}/bin
 
 requirements:
-  build:
-    - python
-    - setuptools
-
+  host:
+    - python <3
   run:
-    - python
-    - samtools 0.1.18|0.1.19
-    
+    - python <3
+    - samtools >=1.2
+    - coreutils
+    - sed
+    - grep
+
 test:
   commands:
     - nudup.py -h
 
 about:
   home: http://nugentechnologies.github.io/nudup/
+  summary: 'Marks/removes duplicate molecules based on the molecular tagging technology used in NuGEN products.'
   license: GNU Lesser General Public License 3.0
   license_file: LICENSE.md

@@ -1,0 +1,39 @@
+{% set version = "0.3.0" %}
+
+package:
+  name: tinyalign
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/t/tinyalign/tinyalign-{{ version }}.tar.gz
+  sha256: 1c8e418bf10d961f9661ff7bedc1555643210e14b318550bbd36072032d204e5
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-build-isolation --no-deps -vv"
+  skip: True  # [py < 311]
+  run_exports:
+    - {{ pin_subpackage('tinyalign', max_pin="x") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('rust') }}
+    - {{ stdlib('c') }}
+  host:
+    - pip
+    - python
+    - setuptools >=78
+    - setuptools-rust
+  run:
+    - python
+
+test:
+  imports:
+    - tinyalign
+
+about:
+  home: https://github.com/marcelm/tinyalign/
+  license: MIT License
+  license_file: LICENSE
+  summary: A small Python module providing edit distance and Hamming distance computation.

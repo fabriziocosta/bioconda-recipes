@@ -1,0 +1,71 @@
+{% set name = "ProMod3" %}
+{% set version = "3.7.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://git.scicore.unibas.ch/schwede/{{ name }}/-/archive/{{ version }}/{{ name|lower }}-{{ version }}.tar.gz
+  sha256: be37e170189501ff3259f6850fd67b5cf2550410cbfd5bf87ae29f7b8baa3e2d
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name|lower, max_pin="x.x") }}
+  skip: True  # [(py < 311) or (py != 313 and aarch64)]
+
+requirements:
+  build:
+    - {{ compiler("cxx") }}
+    - {{ stdlib('c') }}
+    - cmake
+    - ninja
+    - pkg-config
+  host:
+    - python {{ python }}
+    # Boost pin must match recipes/openstructure/meta.yaml; keep both in sync
+    - libboost-devel >=1.90,<1.91
+    - libboost-python-devel >=1.90,<1.91
+    - openmm >=7
+    - eigen
+    - openstructure >=2.12.0
+  run:
+    - python {{ python }}
+    - {{ pin_compatible("openmm", max_pin="x.x") }}
+
+test:
+  source_files:
+    - doc/tests/data/1crn.fasta
+    - doc/tests/data/1crn_cut.pdb
+    - doc/tests/data/1CRNA.hhm
+  commands:
+    - pm 2>&1 | grep -q Usage
+    - pip check
+  imports:
+    - promod3
+  requires:
+    - pip
+
+about:
+  home: https://openstructure.org/promod3/
+  dev_url: https://git.scicore.unibas.ch/schwede/ProMod3
+  doc_url: https://openstructure.org/promod3/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: "ProMod3 is a tool for protein structure prediction and refinement"
+  description: |
+    ProMod3 is a modelling engine based on the OpenStructure computational
+    structural biology framework (www.openstructure.org)
+    that can perform all steps required to generate a protein model by
+    homology. Its modular design aims at implementing flexible modelling
+    pipelines and fast prototyping of novel algorithms.
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:promod3
+    - doi:10.1371/journal.pcbi.1008667

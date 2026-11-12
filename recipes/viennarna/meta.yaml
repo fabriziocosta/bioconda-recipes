@@ -1,35 +1,64 @@
+{% set version = "2.8.0" %}
+{% set sha256 = "4d239d1ccb46400fcb46cf12894d1fb5975b327f91bb3d904bc4283cbe87d476" %}
+
 package:
   name: viennarna
-  version: 2.3.1
+  version: {{ version }}
 
 build:
-  number: 1
+  number: 0
+  run_exports:
+    # Ronny said VRNA is stable in x.x releases
+    - {{ pin_subpackage('viennarna', max_pin='x.x') }}
 
 source:
-  fn: ViennaRNA-2.3.1.tar.gz
-  url: http://www.tbi.univie.ac.at/RNA/packages/source/ViennaRNA-2.3.1.tar.gz
-  sha256: fa7ae1571b6464682be2eff90198e41eb4f54c2cbf135950ea2e246d7cb4bf9d
-  
+  url: https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_8_x/ViennaRNA-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - fix_python_module_copy.patch
+    - fix_clang_cannot_compile_this_static_initializer_yet.patch
+    - fix_openmp_lib_darwin.patch
+
 requirements:
   build:
-    - gcc   # [linux]
-    - llvm  # [osx]
-    - perl-threaded
-    - python >3 # [linux]
+    - make
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - pkgconfig ## needed for viennarna version checks in dependent packages
+    - perl
+    - python
+    - zlib
+    - mpfr # [not osx]
+    - gsl # [not osx]
+    - lapack
+    - llvm-openmp # [osx]
   run:
-    - libgcc # [linux]
+    - perl
+    - python
+    - llvm-openmp # [osx]
 
 test:
   commands:
-   - RNAalifold --version
-   - RNAeval    --version
-   - RNAfold    --version
-   - RNAplfold  --version
-   - RNAsubopt  --version
-   - kinwalker  --help >& /dev/null
+    - RNAalifold --version
+    - RNAeval    --version
+    - RNAfold    --version
+    - RNAplot    --version
+    - RNAplfold  --version
+    - RNAsubopt  --version
+    - RNAlocmin  --version
+    - kinwalker  --help >& /dev/null
+    - python -c "import RNA"
+    - perl -MRNA -e "print qq(ok\n)"
 
 about:
   home: http://www.tbi.univie.ac.at/RNA/
   license: custom
   license_file: COPYING
-  summary: Vienna RNA package -- RNA secondary structure prediction and comparison
+  summary: ViennaRNA package -- RNA secondary structure prediction and comparison
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64

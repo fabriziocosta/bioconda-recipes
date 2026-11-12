@@ -1,0 +1,50 @@
+{% set name = "taxonomy" %}
+{% set version = "0.10.7" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/taxonomy-{{ version }}.tar.gz
+  sha256: 68e45bdbe947268c059360b645a85f49f5488fd03daad19c5dd853431c1837e5
+  patches:
+    - pyproject.patch
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('rust') }}
+    - cargo-bundle-licenses
+    - pkg-config
+  host:
+    - python
+    - pip
+    - maturin
+  run:
+    - python
+
+test:
+  imports:
+    - taxonomy
+
+about:
+  home: "https://github.com/onecodex/taxonomy"
+  dev_url: "https://github.com/onecodex/taxonomy"
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Python and Rust library for loading, saving, and manipulating taxonomic trees."
+  doc_url: "https://docs.rs/crate/taxonomy/latest"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  skip-lints:
+    - compiler_needs_stdlib_c

@@ -1,0 +1,47 @@
+{% set name = "sdm" %}
+{% set version = "3.67" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/hildebra/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 0492bb1bb31158ba7b35ed90f3928816094a3fa8245982ea8c84eb2a7d8f07b7
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - {{ stdlib('c') }}
+    - {{ compiler('cxx') }}
+    - make
+    - pkg-config
+  host:
+    - zlib
+    - htslib
+    - isa-l
+    - zstd
+
+test:
+  commands:
+    - sdm
+
+about:
+  home: "https://github.com/hildebra/sdm"
+  license: "GPL-3.0-or-later"
+  license_family: GPL3
+  license_file: LICENSE
+  summary: "sdm - simple demultiplex tool for FASTQ demultiplexing and dereplication."
+  dev_url: "https://github.com/hildebra/sdm"
+  doc_url: "https://github.com/hildebra/sdm/blob/v{{ version }}/README.md"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - doi:10.1186/2049-2618-2-30

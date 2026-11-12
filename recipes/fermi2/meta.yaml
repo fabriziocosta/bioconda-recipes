@@ -1,30 +1,45 @@
+{% set name = "fermi2" %}
+{% set version = "r204" %}
+
 package:
-  name: fermi2
-  version: "r188"
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/lh3/fermi2/archive/cb1410972b2bd330883823116931ae67ead8b30f.tar.gz
+  sha256: e3ffb2a61f1175922b622c68fcbe8042f92c64d09f5d280e2bab21842f1f12b0
+  patches:
+    - fermi2-aarch64.patch  # [arm64 or aarch64]
 
 build:
   number: 0
-  skip: True # [osx]
-
-source:
-  fn: fermi2_r188.tar.gz
-  url: https://github.com/lh3/fermi2/archive/ee4c2349b387e628e402f6daa5815ca5c2e12fbf.tar.gz
-  md5: d03f8b668b6dc81b1873fb568f2661f7
+  run_exports:
+    - {{ pin_subpackage(name, max_pin=None) }}
 
 requirements:
   build:
-  - gcc
-
+    - {{ compiler('c') }}
+    - make
+  host:
+    - zlib
   run:
-  - libgcc
-  - ropebwt2
+    - bfc
+    - ropebwt2
+    - seqtk
+    - perl
 
 test:
   commands:
-    - fermi2  2>&1 | grep fermi2 > /dev/null
+    - fermi2 2>&1 | grep "^Usage:"
+    - fermi2.pl 2>&1 | grep "^Usage:"
 
 about:
-  home: https://github.com/lh3/fermi2
+  home: "https://github.com/lh3/fermi2"
   license: Unknown
-  summary: Fermi2 focuses on the exploration of FMD-index as a graph.
+  summary: "Fermi2 focuses on the exploration of FMD-index as a graph."
+  dev_url: "https://github.com/lh3/fermi2"
 
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64

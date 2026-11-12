@@ -1,28 +1,59 @@
+{% set name = "sambamba" %}
+{% set version = "1.0.1" %}
+{% set sha256 = "955a51a00be9122aa9b0c27796874bfdda85de58aa0181148ef63548ea5192b0" %}
+
 package:
-  name: sambamba
-  version: '0.6.5'
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  fn: sambamba_v0.6.5.tar.bz2
-  url: https://github.com/lomereiter/sambamba/releases/download/v0.6.5/sambamba_v0.6.5_linux.tar.bz2 # [linux]
-  md5: 697b8903722ec0225f378547b7bb9973 # [linux]
-  url: https://github.com/lomereiter/sambamba/releases/download/v0.6.5/sambamba_v0.6.5_osx.tar.bz2 # [osx]
-  md5: b08b8858dc6ac6b1d20f65e715845cbb # [osx]
+  url: https://github.com/biod/sambamba/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - 0001-fix-osx-compile.patch
+    - 0002-Makefile.macos.patch  # [osx]
 
 build:
-  number: 0
+  number: 4
+  run_exports:
+    - {{ pin_subpackage(name, max_pin='x') }}
 
 requirements:
   build:
-  run:
-    - samtools # required for mpileup
-    - bcftools # required for mpileup
+    - {{ compiler('c') }}
+    - make
+    - python
+  host:
+    - bzip2
+    - ldc >=1.17.0  # [not arm64]
+    - lz4-c
+    - xz
+    - zlib
+    - wget  # [arm64]
 
 test:
   commands:
-    - sambamba view
+    - sambamba view --help
 
 about:
-  home: https://github.com/lomereiter/sambamba
-  license: GPLv2
-  summary: Tools for working with SAM/BAM data
+  home: "https://github.com/biod/sambamba"
+  doc_url: "https://lomereiter.github.io/sambamba/docs/sambamba-view.html"
+  dev_url: "https://github.com/biod/sambamba"
+  license: "GPL-2.0-only"
+  license_family: GPL2
+  license_file: LICENSE
+  summary: "Tools for working with SAM/BAM data."
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - doi:10.1093/bioinformatics/btv098
+    - biotools:sambamba
+    - usegalaxy-eu:sambamba_flagstat
+    - usegalaxy-eu:sambamba_markdup
+    - usegalaxy-eu:sambamba_merge
+    - usegalaxy-eu:sambamba_sort
+  recipe-maintainers:
+    - mjsteinbaugh

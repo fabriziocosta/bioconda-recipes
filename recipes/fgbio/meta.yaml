@@ -1,25 +1,38 @@
-about:
-    home: https://github.com/fulcrumgenomics/fgbio
-    license: MIT
-    summary: A set of tools for working with genomic and high throughput sequencing data, including UMIs
+{% set version = "4.1.1" %}
+
 package:
-    name: fgbio
-    version: 0.1.2a
-build:
-  number: 0
-  skip: true # [not py27]
+  name: fgbio
+  version: {{ version }}
+
 source:
-    fn: fgbio-4c4a68181.tar.gz
-    url: https://github.com/fulcrumgenomics/fgbio/archive/4c4a68181.tar.gz
+  url: https://github.com/fulcrumgenomics/fgbio/releases/download/{{ version }}/fgbio-{{ version }}.jar
+  sha256: cf569dd9f32dcdd4a38f2af7e2763eb16dcd1d5467e9414caeed027893b4ab36
+
+build:
+  noarch: generic
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('fgbio', max_pin="x") }}
+
 requirements:
-  build:
-    - java-jdk >=8
-    - sbt
-    - scala
   run:
-    - java-jdk >=8
+    - openjdk >=8
     - python
+    - r-base
+    - r-ggplot2
+    - r-scales
 
 test:
-    commands:
-      - fgbio 2>&1 | grep "CallMolecularConsensusReads"
+  commands:
+    - 'fgbio 2>&1 | grep "CallMolecularConsensusReads"'
+    - 'fgbio --version 2>&1 | grep "Version"'
+
+about:
+  home: https://github.com/fulcrumgenomics/fgbio
+  license: MIT
+  license_family: MIT
+  summary: A set of tools for working with genomic and high throughput sequencing data, including UMIs
+
+extra:
+  identifiers:
+    - DOI:10.5281/zenodo.10456900

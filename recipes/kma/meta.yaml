@@ -1,0 +1,49 @@
+{% set name = "kma" %}
+{% set version = "1.7.1" %}
+{% set sha256 = "3d9dd5ccd14baec5539484401fc0be84ef6e76f3475b051009badf9e8a8ff144" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://bitbucket.org/genomicepidemiology/kma/get/{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - make
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+  host:
+    - zlib
+
+test:
+  commands:
+   - kma -h | grep KMA >/dev/null
+   - kma index -h | grep kma_index
+   - kma shm -h | grep kma_shm >/dev/null
+   - kma update -h | grep KMA_update >/dev/null
+
+about:
+  home: "https://bitbucket.org/genomicepidemiology/kma"
+  summary: 'KMA is a mapping method designed to map raw reads directly against redundant databases, in an ultra-fast manner using seed and extend.'
+  license: "Apache-2.0"
+  license_family: APACHE
+  license_file: LICENSE
+  dev_url: "https://bitbucket.org/genomicepidemiology/kma"
+  doc_url: "https://bitbucket.org/genomicepidemiology/kma/src/{{ version }}/README.md"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - doi:10.1093/nargab/lqaf116
+    - usegalaxy-eu:kma_map
+    - biotools:kma

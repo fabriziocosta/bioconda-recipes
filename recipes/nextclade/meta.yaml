@@ -1,0 +1,51 @@
+{% set name = "nextclade" %}
+{% set version = "3.29.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  - url: https://github.com/nextstrain/nextclade/releases/download/{{ version }}/{{ name }}-x86_64-unknown-linux-gnu   # [linux64]
+    sha256: be06d8a666472cc9cb937a014a91b1941e46e90b4a82191adf545a00ba066c2b                                           # [linux64]
+  - url: https://github.com/nextstrain/nextclade/releases/download/{{ version }}/{{ name }}-aarch64-unknown-linux-gnu  # [aarch64]
+    sha256: 61b34641341cd76ffa8c5edbf15973446f80e39567f67079057a4137345458d8                                           # [aarch64]
+  - url: https://github.com/nextstrain/nextclade/releases/download/{{ version }}/{{ name }}-x86_64-apple-darwin        # [osx and x86_64]
+    sha256: f67485e59369989937b8d35114b1a08db9e0dd444a61e6461aa80fc72a23fdd2                                           # [osx and x86_64]
+  - url: https://github.com/nextstrain/nextclade/releases/download/{{ version }}/{{ name }}-aarch64-apple-darwin       # [osx and arm64]
+    sha256: 20372d11949c8a4cf55d5f0b8a3dad617c7f449b8e13e378fb52bd758c4a2fe8                                           # [osx and arm64]
+
+build:
+  number: 0
+  binary_relocation: False
+  run_exports:
+    - {{ pin_compatible(name, max_pin="x") }}
+
+requirements:
+# Disable test for aarch64, as nextclade requires glibc 2.18 not available on aarch64
+
+test:
+  commands:
+    - nextclade --help  # [not aarch64]
+
+about:
+  home: "https://github.com/nextstrain/nextclade"
+  license: MIT
+  license_family: MIT
+  summary: "Viral genome alignment, mutation calling, clade assignment, quality checks and phylogenetic placement."
+  doc_url: "https://docs.nextstrain.org/projects/nextclade/en/stable"
+  dev_url: "https://github.com/nextstrain/nextclade"
+
+extra:
+  identifiers:
+    - doi:10.21105/joss.03773
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  recipe-maintainers:
+    - pvanheus
+    - corneliusroemer
+    - ivan-aksamentov
+  skip-lints:
+    # repackaged binary
+    - should_be_noarch_generic

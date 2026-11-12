@@ -1,45 +1,41 @@
+{% set name = "dendropy" %}
+{% set version = "5.1.3" %}
+{% set sha256 = "6470bdb8a7d7d5969c113070b412fa9eecc8b1f7d23928c7ed4aa31fca32d818" %}
+
 package:
-  name: dendropy
-  version: "4.0.3"
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  fn: DendroPy-4.0.3.tar.gz
-  url: https://pypi.python.org/packages/source/D/DendroPy/DendroPy-4.0.3.tar.gz
-  md5: aecd45bb1c5a04a35a812e764001d7ba
-#  patches:
-   # List any patch files here
-   # - fix.patch
+  url: https://github.com/jeetsukumaran/DendroPy/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-  # noarch_python: True
-  preserve_egg_dir: True
-  # entry_points:
-    # Put any entry points (scripts to be generated automatically) here. The
-    # syntax is module:function.  For example
-    #
-    # - dendropy = dendropy:main
-    #
-    # Would create an entry point called dendropy that calls dendropy.main()
-
-
-  # If this is a new build for the same version, increment the build
-  # number. If you do not include this key, it defaults to 0.
-  # number: 1
-  skip: False
+  number: 0
+  noarch: python
+  script:
+    - sed -i.bak 's|find_packages|find_namespace_packages|' setup.py
+    - rm -rf *.bak
+    - {{ PYTHON }} -m pip install . --use-pep517 --no-deps --no-build-isolation --no-cache-dir -vvv
+  entry_points:
+    - sumtrees = dendropy.application.sumtrees:main
+    - sumlabels = dendropy.application.sumlabels:main_cli
+    - dendropy-format = dendropy.application.dendropy_format:main
+    - sumtrees.py = dendropy.application.sumtrees:main
+    - sumlabels.py = dendropy.application.sumlabels:main_cli
+  run_exports:
+    - {{ pin_subpackage('dendropy', max_pin="x") }}
 
 requirements:
-  build:
-    - python
+  host:
+    - python >=3.6
+    - pip
     - setuptools
-    - setuptools
-
+    - pytest-runner
   run:
-    - python
-    - setuptools
-    - setuptools
+    - python >=3.6
 
 test:
-  # Python imports
   imports:
     - dendropy
     - dendropy.calculate
@@ -50,27 +46,19 @@ test:
     - dendropy.mathlib
     - dendropy.model
     - dendropy.simulate
-    - dendropy.test
     - dendropy.utility
     - dendropy.utility.libexec
 
-  # commands:
-    # You can put test commands to be run here.  Use this to test that the
-    # entry points work.
-
-
-  # You can also put a file called run_test.py in the recipe that will be run
-  # at test time.
-
-  # requires:
-    # Put any additional test requirements here.  For example
-    # - nose
-
 about:
-  home: http://packages.python.org/DendroPy/
-  license: BSD License
-  summary: 'A Python library for phylogenetics and phylogenetic computing: reading, writing, simulation, processing and manipulation of phylogenetic trees (phylogenies) and characters.'
+  home: "https://github.com/jeetsukumaran/DendroPy"
+  summary: "A Python library for phylogenetics and phylogenetic computing: reading, writing, simulation, processing and manipulation of phylogenetic trees (phylogenies) and characters."
+  license: "BSD-3-Clause"
+  license_family: BSD
+  license_file: "LICENSE.rst"
+  dev_url: "https://github.com/jeetsukumaran/DendroPy"
+  doc_url: "https://dendropy.org"
 
-# See
-# http://docs.continuum.io/conda/build.html for
-# more information about meta.yaml
+extra:
+  identifiers:
+    - biotools:dendropy
+    - doi:10.1093/bioinformatics/btq228

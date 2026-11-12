@@ -1,0 +1,64 @@
+{% set name = "cooler" %}
+{% set version = "0.12.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.python.org/packages/source/c/cooler/cooler-{{ version }}.tar.gz
+  sha256: 0298597dd630e77883314f795255abb815774a76732bcc8a4d3b2adc4bb3d05e
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - cooler = cooler.cli:cli
+  script: "{{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv"
+  run_exports:
+    - {{ pin_subpackage('cooler', max_pin="x.x") }}
+
+requirements:
+  host:
+    - python >=3.9
+    - pip
+    - hatchling
+    - hatch-vcs
+  run:
+    - asciitree >=0.3
+    - click >=8
+    - dask
+    - h5py >=3.0
+    - numpy >=1.26
+    - pairix
+    - pandas >1.5
+    - pyfaidx
+    - pysam
+    - python >=3.9
+    - pyyaml
+    - scipy >=1.11
+
+test:
+  imports:
+    - cooler
+    - cooler.cli
+  commands:
+    # click requires a unicode locale
+    - cooler --help
+
+about:
+  home: "https://github.com/open2c/cooler"
+  summary: 'Sparse binary format for genomic interaction matrices.'
+  license: "BSD-3-Clause"
+  license_family: BSD
+  license_file: LICENSE
+  dev_url: "https://github.com/open2c/cooler"
+  doc_url: "https://open2c.github.io/cooler"
+
+extra:
+  identifiers:
+    - doi:0.1093/bioinformatics/btz540
+  container:
+    # click requires a unicode locale when used with Python 3
+    # extended-base generates en_US.UTF-8 locale and sets LC_ALL, LANG properly
+    extended-base: true  # [py3k]

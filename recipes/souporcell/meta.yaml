@@ -1,0 +1,74 @@
+{% set name = "souporcell" %}
+{% set version = "3.0" %}
+{% set github = "https://github.com/wheaton5/souporcell" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: {{ github}}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 6d2e3b4b7a33cd266e56ecb477ee5311567e9bcc91e9f60301e730ab46e28de6
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
+requirements:
+  build:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('rust') }}
+    - cargo-bundle-licenses
+  run:
+    - python
+    - pysam
+    - pystan <3  # [x86_64]
+    - pystan  # [aarch64 or arm64]
+    - pyvcf
+    - numpy
+    - pyfaidx
+    - scipy
+    - bcftools >=1.9
+    - bedtools >=2.28
+    - freebayes >=1.3
+    - htslib >=1.9
+    - hisat2
+    - minimap2 >=2.26
+    - samtools >=1.9
+    - vartrix
+
+test:
+  commands:
+    - ${PREFIX}/bin/souporcell/target/release/souporcell -h
+    - ${PREFIX}/bin/troublet/target/release/troublet -h
+    - compile_stan_model.py -h
+    - consensus.py -h
+    - renamer.py -h
+    - retag.py -h
+    - shared_samples.py -h
+    - souporcell_pipeline.py -h
+
+about:
+  home: {{ github }}
+  license: MIT
+  license_family: MIT
+  license_file:
+    - LICENSE
+    - souporcell/souporcell-THIRDPARTY.yml
+    - troublet/troublet-THIRDPARTY.yml
+  summary: "Clustering scRNAseq by genotypes."
+  dev_url: {{ github }}
+  doc_url: "https://github.com/wheaton5/souporcell/blob/{{ version }}/README.md"
+
+extra:
+  #additional-platforms:
+    # pystan not available on aarch64 in conda-forge channel
+    #- linux-aarch64
+    # pystan dependency error
+    #- osx-arm64
+  identifiers:
+    - doi:10.1038/s41592-020-0820-1
+    - doi:10.1093/bioinformatics/btag117
+    - biotools:souporcell

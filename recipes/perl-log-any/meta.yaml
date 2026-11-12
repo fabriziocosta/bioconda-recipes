@@ -1,0 +1,62 @@
+{% set version = "1.720" %}
+{% set name = "perl-log-any" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://cpan.metacpan.org/authors/id/P/PR/PREACTION/Log-Any-{{ version }}.tar.gz
+  sha256: 1fa8a6121dce297406f67adbcb4d92db01e9dd85781cb6ef710dc333bb9cfd56
+
+build:
+  number: 0
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - make
+  host:
+    - perl
+    - perl-pathtools
+    - perl-apache-test
+    - perl-test-simple
+    - perl-extutils-makemaker
+    - perl-exporter
+    - perl-constant
+    - perl-carp
+    - perl-data-dumper
+  run:
+    - perl
+    - perl-apache-test
+    - perl-test-simple
+    - perl-exporter
+    - perl-constant
+    - perl-carp
+    - perl-data-dumper
+
+test:
+  imports:
+    - Log::Any
+    - Log::Any::Adapter
+    - Log::Any::Adapter::Base
+    - Log::Any::Adapter::File
+    - Log::Any::Adapter::Null
+    - Log::Any::Adapter::Stderr
+    - Log::Any::Adapter::Stdout
+    - Log::Any::Adapter::Test
+    - Log::Any::Adapter::Util
+    - Log::Any::Manager
+    - Log::Any::Proxy
+    - Log::Any::Proxy::Null
+    - Log::Any::Proxy::Test
+    - Log::Any::Test
+
+about:
+  home: "https://github.com/preaction/Log-Any"
+  license: "Perl_5"
+  summary: "Bringing loggers and listeners together."
+  dev_url: "https://github.com/preaction/Log-Any"
+  doc_url: "https://metacpan.org/pod/Log::Any"

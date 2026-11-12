@@ -1,42 +1,59 @@
 #!/bin/bash
 
-# MacOSX Build fix: https://github.com/chapmanb/homebrew-cbl/issues/14
-if [ "$(uname)" == "Darwin" ]; then
-   sed -i.bak 's/LDFLAGS=-Wl,-s/LDFLAGS=/' vcflib/smithwaterman/Makefile
-   export CXXFLAGS="${CXXFLAGS} -std=c++11 -stdlib=libc++"
+mkdir -p ${PREFIX}/bin
+
+mkdir build
+
+export C_INCLUDE_PATH="${PREFIX}/include"
+export LIBRARY_PATH="${PREFIX}/lib"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
+export CXXFLAGS="${CXXFLAGS} -O3"
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+
+sed -i.bak -e 's|"split.h"|<vcflib/split.h>|' src/*.h
+sed -i.bak -e 's|"split.h"|<vcflib/split.h>|' src/*.cpp
+sed -i.bak -e 's|"convert.h"|<vcflib/convert.h>|' src/*.h
+sed -i.bak -e 's|"convert.h"|<vcflib/convert.h>|' src/*.cpp
+sed -i.bak -e 's|"join.h"|<vcflib/join.h>|' src/*.h
+sed -i.bak -e 's|"join.h"|<vcflib/join.h>|' src/*.cpp
+sed -i.bak -e 's|"multichoose.h"|<vcflib/multichoose.h>|' src/*.h
+sed -i.bak -e 's|"multichoose.h"|<vcflib/multichoose.h>|' src/*.cpp
+sed -i.bak -e 's|<Variant.h>|<vcflib/Variant.h>|' src/*.h
+sed -i.bak -e 's|<intervaltree/IntervalTree.h>|<vcflib/IntervalTree.h>|' src/BedReader.h
+sed -i.bak -e 's|<IntervalTree.h>|<vcflib/IntervalTree.h>|' src/BedReader.cpp
+sed -i.bak -e 's|<Fasta.h>|"Fasta.h"|' ${PREFIX}/include/vcflib/Variant.h
+rm -rf src/*.bak
+
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+if [[ "${OS}" == "Darwin" && "${ARCH}" == "x86_64" ]]; then
+	export CXXFLAGS="${CXXFLAGS} -arch x86_64"
+	sed -i.bak -e 's|c++17|c++14|' meson.build
+	rm -rf *.bak
+elif [[ "${OS}" == "Darwin" && "${ARCH}" == "arm64" ]]; then
+	export CXXFLAGS="${CXXFLAGS} -arch arm64"
+	sed -i.bak -e 's|c++17|c++14|' meson.build
+	rm -rf *.bak
 fi
 
-export C_INCLUDE_PATH=$PREFIX/include
-export CFLAGS="-I$PREFIX/include"
+CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" meson setup --buildtype release \
+	--prefix "${PREFIX}" --strip --includedir "${PREFIX}/include" \
+	--libdir "${PREFIX}/lib" -Dc_args="-I${PREFIX}/include" \
+	-Dc_link_args="-L${PREFIX}/lib" build/
 
-# bamtools/cmake for zlib
-export CPLUS_INCLUDE_PATH=${PREFIX}/include
-export LIBRARY_PATH=${PREFIX}/lib
+cd build
 
+sed -i.bak -e 's|-I../src|-I../src -I../contrib -I../contrib/SeqLib -I../contrib/fastahack -I../contrib/smithwaterman|' build.ninja
+rm -rf *.bak
 
-mkdir -p bamtools/build
-cd bamtools/build
-cmake ..
-cd ../..
+ninja -v -j"${CPU_COUNT}"
+ninja install -v -j"${CPU_COUNT}"
 
-cd src
-make autoversion
-make CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib"
-cd ..
+## Copy scripts over to ${PREFIX}/bin ##
+install -v -m 0755 ../scripts/*.py "${PREFIX}/bin"
+install -v -m 0755 ../scripts/*.sh "${PREFIX}/bin"
+install -v -m 0755 ../scripts/*.pl "${PREFIX}/bin"
+install -v -m 0755 ../scripts/freebayes-parallel "${PREFIX}/bin"
 
-pythonfiles="scripts/fasta_generate_regions.py scripts/coverage_to_regions.py"
-
-PY3_BUILD="${PY_VER%.*}"
-
-if [ $PY3_BUILD -eq 3 ]
-then
-    for i in $pythonfiles; do 2to3 --write $i; done
-fi
-
-mkdir -p $PREFIX/bin
-cp -r bin/* $PREFIX/bin
-cp scripts/freebayes-parallel $PREFIX/bin
-sed -i.bak 's@#!/usr/bin/python@#!/usr/bin/env python@g' scripts/fasta_generate_regions.py
-cp scripts/fasta_generate_regions.py $PREFIX/bin
-cp scripts/coverage_to_regions.py $PREFIX/bin
-cp scripts/generate_freebayes_region_scripts.sh $PREFIX/bin
+chmod 0755 "${PREFIX}/bin/freebayes"

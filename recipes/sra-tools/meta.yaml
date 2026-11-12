@@ -1,50 +1,78 @@
-{% set SRA_TOOLS_VERSION = "2.7.0" %}
-{% set NCBI_VDB_VERSION = SRA_TOOLS_VERSION %}
-{% set NGS_SDK_VERSION = "1.2.5" %}
+{% set name = "sra-tools" %}
+{% set version = "3.4.1" %}
+{% set sha256_linux64  = "f4850a32975596ca0755d928b166ecb0095918284ea992fba10f1acb3fcff64d" %}
+{% set sha256_osx64    = "8e19acfc0be8544b982b5233ae3f9469df31a317e50d63e984de034587e77488" %}
+{% set sha256_osxarm64 = "b38ec90f9c99805533c90684310b0495288890559c5af194f1074b72f4e95255" %}
 
 package:
-  name: sra-tools
-  version: {{ SRA_TOOLS_VERSION }}
-
-build:
-  number: 0
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  fn: sra-tools-{{ SRA_TOOLS_VERSION }}.tar.gz
-  url: https://github.com/ncbi/sra-tools/archive/{{ SRA_TOOLS_VERSION }}.tar.gz
-  sha256: 274cd6c4a228c351b5e72eecf382d73d5cccde7d852940af68877883d7e1ea8e
+  # Linux x86_64
+  - url: https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/{{ version }}/sratoolkit.{{ version }}-alma_linux64.tar.gz # [linux and x86_64]
+    sha256: {{ sha256_linux64 }} # [linux and x86_64]
+    folder: sra-tools # [linux and x86_64]
 
-extra:
-  sources:
-    ncbi-vdb:
-      fn: ncbi-vdb-{{ NCBI_VDB_VERSION }}.tar.gz
-      url: https://github.com/ncbi/ncbi-vdb/archive/{{ NCBI_VDB_VERSION }}.tar.gz
-      sha256: 8e227b06dffb5894cac43c2a8d3fee50b23f4609cc6a7027951ef88d7a782c74
-    ngs-sdk:
-      fn: ngs-sdk-{{ NGS_SDK_VERSION }}.tar.gz
-      url: https://github.com/ncbi/ngs/archive/{{ NGS_SDK_VERSION }}.tar.gz
-      sha256: 2a32c30d1611f8ce68aba81e5b44369969c6d32bcebc37aa41be2cdbaa76c113
+  # macOS Intel
+  - url: https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/{{ version }}/sratoolkit.{{ version }}-mac-x86_64.tar.gz # [osx and x86_64]
+    sha256: {{ sha256_osx64 }} # [osx and x86_64]
+    folder: sra-tools # [osx and x86_64]
 
-  notes: "This package includes ncbi-vdb and ngs-sdk. After installation, you should run the configuration tool: ./vdb-config -i. This tool will setup your download/cache area for downloaded files and references."
+  # macOS Apple Silicon
+  - url: https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/{{ version }}/sratoolkit.{{ version }}-mac-arm64.tar.gz # [osx and arm64]
+    sha256: {{ sha256_osxarm64 }} # [osx and arm64]
+    folder: sra-tools # [osx and arm64]
+
+build:
+  number: 2
+  skip: true  # [win or (linux and not x86_64) or (osx and not (x86_64 or arm64))]
+  string: "{{ PKG_BUILDNUM }}_{{ target_platform | replace('-', '_') }}"
+  run_exports:
+    - {{ pin_subpackage(name, max_pin='x') }}
 
 requirements:
-  build:
-    - gcc # [not osx]
-    - llvm # [osx]
   run:
-    #
+    - ca-certificates
+    - curl
+    - ossuuid  # [linux]
+    - perl
+    - perl-xml-libxml
+    - perl-uri
 
-about:
-  home: https://github.com/ncbi/sra-tools
-  license: Public Domain
-  summary: The SRA Toolkit and SDK from NCBI is a collection of tools and
-           libraries for using data in the INSDC Sequence Read Archives.
 test:
   commands:
-    # "Frequently Used Tools"
-    - fastq-dump --help > /dev/null
-    - prefetch --help > /dev/null
-    - sam-dump --help > /dev/null
-    - sra-pileup --help > /dev/null
-    - vdb-config --help > /dev/null
-    - vdb-decrypt --help > /dev/null
+    - test -x "${PREFIX}/bin/prefetch"     # [linux]
+    - test -x "${PREFIX}/bin/fastq-dump"   # [linux]
+    - test -x "${PREFIX}/bin/vdb-config"   # [linux]
+    - test -x "${PREFIX}/bin/fasterq-dump" # [linux]
+    - prefetch --version # [osx]
+    - fastq-dump --version  # [osx]
+    - vdb-config --version  # [osx]
+    - fasterq-dump --version # [osx]
+    - prefetch SRR000001 # [osx]
+    - fasterq-dump SRR000001 --stdout --concatenate-reads | head -n 10 # [osx]
+
+about:
+  home: "https://github.com/ncbi/sra-tools"
+  license: "Public Domain"
+  summary: "The SRA Toolkit and SDK from NCBI."
+  description:  |
+    "The SRA Toolkit and SDK from NCBI is a collection of tools and libraries
+    for using data in the INSDC Sequence Read Archives."
+  dev_url: "https://github.com/ncbi/sra-tools"
+  doc_url: "https://github.com/ncbi/sra-tools/wiki"
+
+extra:
+  additional-platforms:
+    - osx-arm64
+  notes: '
+    The tool requires glibc ≥ 2.28 at runtime.
+    After installation, you should run the configuration tool: ./vdb-config -i
+    This tool will setup your download/cache area for downloaded files and references.'
+  identifiers:
+    - biotools:sra-tools
+  skip-lints:
+    - should_be_noarch_generic
+  recipe-maintainers:
+    - rajwanir2

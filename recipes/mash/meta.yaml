@@ -1,28 +1,62 @@
+{% set name = "Mash" %}
+{% set version = "2.3" %}
+{% set sha256 = "f96cf7305e010012c3debed966ac83ceecac0351dbbfeaa6cd7ad7f068d87fe1" %}
+
 package:
-  name: mash
-  version: '1.1'
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  fn: mash-OSX64-v1.1.tar.gz # [osx]
-  md5: eb2b54926b1f2dfc58e01dcfd3edb931 # [osx]
-  url: https://github.com/marbl/Mash/releases/download/v1.1/mash-OSX64-v1.1.tar.gz # [osx]
-  fn: mash-Linux64-v1.1.tar.gz # [linux64]
-  md5: 9539aa9b494934b17afbf1d1b4821bf4 # [linux64]
-  url: https://github.com/marbl/Mash/releases/download/v1.1/mash-Linux64-v1.1.tar.gz # [linux64]
-
+  url: https://github.com/marbl/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - limits.patch
+    - memcpy-no-wrap.patch
+    
 build:
-  number: 0
+  number: 11
+  run_exports:
+    - {{ pin_subpackage(name|lower, max_pin='x') }}
 
 requirements:
+  build:
+    - make
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
+    - autoconf
+    - automake
+    - libtool
+  host:
+    - zlib >=1.3
+    - libzlib
+    - capnproto
+    - gsl >=2.8
+    - libcblas
   run:
-    - libgcc
-    - zlib
-    #- capnp
+    - capnproto
+    - gsl
+    - libcblas
+
 test:
   commands:
-    - "mash -h &> /dev/null"
+    - mash -h
+    - mash --version | grep '{{ version }}'
 
 about:
-  home: https://github.com/marbl/Mash
-  license: "https://raw.githubusercontent.com/marbl/Mash/master/LICENSE.txt"
-  summary: "Fast sequence distance estimator that uses MinHash"
+  home: https://github.com/marbl/{{ name }}
+  license: BSD-3-Clause
+  license_file: "LICENSE.txt"
+  summary: "Fast sequence distance estimator that uses MinHash."
+  dev_url: https://github.com/marbl/{{ name }}
+  doc_url: "https://mash.readthedocs.io/en/latest"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:mash
+    - usegalaxy-eu:mash_screen
+    - usegalaxy-eu:mash_sketch
+    - doi:10.1186/s13059-016-0997-x
+    - doi:10.1186/s13059-019-1841-x

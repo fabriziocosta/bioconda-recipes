@@ -1,0 +1,66 @@
+{% set name = "concoct" %}
+{% set version = "1.1.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/BinPro/CONCOCT/archive/{{ version }}.tar.gz
+  sha256: 00aecacb4b720ac123a63e65072c61e0b5a8690d844c869aaee4dbf287c82888
+  patches:
+    - concoct-newer-scikit-learn.patch
+
+build:
+  number: 9
+  skip: True  # [py < 35]
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python <=3.12
+    - pip
+    - setuptools <80.9  # uses pkg_resources
+    - cython >=0.28.5
+    - numpy
+    - gsl
+  run:
+    - python <=3.12
+    - setuptools <80.9  # uses pkg_resources
+    - cython >=0.28.5
+    - numpy >=1.8.0,<2
+    - scipy
+    - pandas
+    - biopython
+    - pytz
+    - scikit-learn
+    - nose
+    - gsl
+    - samtools
+
+test:
+  commands:
+    - concoct -h
+  imports:
+    - concoct
+
+about:
+  home: https://github.com/BinPro/CONCOCT
+  dev_url: https://github.com/BinPro/CONCOCT
+  license: "BSD-2-Clause"
+  summary: 'Clustering cONtigs with COverage and ComposiTion.'
+  license_family: BSD
+  license_file: "LICENSE.txt"
+  doc_url: "https://concoct.readthedocs.io/en/latest"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  skip-lints:
+    - cython_must_be_in_host  # Cython needs to be in run as well currently
+  identifiers:
+    - doi:10.1038/nmeth.3103

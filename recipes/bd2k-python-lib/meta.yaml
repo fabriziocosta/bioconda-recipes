@@ -1,20 +1,21 @@
 package:
   name: bd2k-python-lib
-  version: "1.14a1.dev33"
+  version: "1.14a1.dev48"
 
 source:
-  fn: bd2k-python-lib-1.14a1.dev33.tar.gz
-  url: https://pypi.python.org/packages/56/b3/207a57168bd4b25deee306f5a6eb033117578d921a70e8d0ba5f169f6e15/bd2k-python-lib-1.14a1.dev33.tar.gz
-  md5: bbb1fc325276a2f8f04d75e39cc70d7c
+  url: https://files.pythonhosted.org/packages/28/2f/4f3c4b40be9650d8e15a6505f5328ea1a69d923cb073b70d4685cabcacb3/bd2k-python-lib-1.14a1.dev48.tar.gz
+  sha256: 52b8cad5b9d34e789233472e9c9e9c2b745bea98329a3249486e641fb4557efa
 
 build:
-  number: 0
+  noarch: python
+  number: 2
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
 
 requirements:
-  build:
+  host:
     - python
     - setuptools
-
+    - pytest-runner
   run:
     - python
 
@@ -26,12 +27,6 @@ test:
     - bd2k.util.ec2.test
     - bd2k.util.test
     - bd2k.util.xml
-
-  requires:
-    - boto
-    - lockfile
-    - mock
-    - pytest
 
 about:
   home: https://github.com/BD2KGenomics/bd2k-python-lib

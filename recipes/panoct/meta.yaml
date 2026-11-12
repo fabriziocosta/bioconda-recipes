@@ -1,0 +1,37 @@
+{% set name = "panoct" %}
+{% set version = "3.23" %}
+{% set hash = "46541322856fa36e3198f6b38e441d4a2db85d0f96097d82e11dc648b37b1a96" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://downloads.sourceforge.net/project/panoct/panoct_v{{ version }}.tar.gz
+  sha256: {{ hash }}
+
+build:
+  number: 2
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage('panoct', max_pin="x") }}
+
+requirements:
+  build:
+    - perl >=5.26.2
+    - perl-module-build
+  run:
+    - perl >=5.26.2
+
+test:
+  commands:
+    - panoct.pl -h
+    - gene_order.pl -h
+    - paralog_matchtable.pl -h
+
+about:
+  home: "https://panoct.sourceforge.io"
+  license: "GPL-3.0-or-later"
+  license_family: GPL3
+  summary: "PanOCT, Pan-genome Ortholog Clustering Tool, is a program for pan-genomic analysis of closely related prokaryotic species or strains."
+  dev_url: "https://panoct.sourceforge.io"

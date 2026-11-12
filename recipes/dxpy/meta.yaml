@@ -1,0 +1,77 @@
+{% set name = "dxpy" %}
+{% set version = "0.418.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 325f72008804d22d04dc38ef085495c55d3ad7dd367bf7bd5e342f649644c996
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - dx-build-applet = dxpy.scripts.dx_build_applet:main
+    - dx-build-app = dxpy.scripts.dx_build_app:main
+    - dx = dxpy.scripts.dx:main
+    - dx-app-wizard = dxpy.scripts.dx_app_wizard:main
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+    - setuptools
+  run:
+    - python >=3.8
+    - argcomplete >=3.5.2  # [py >= 312]
+    - argcomplete >=2.0.0  # [py >= 310]
+    - argcomplete >=1.9.4,<2.0.0  # [py < 310]
+    - websocket-client >=1.6.0,<=1.9.0
+    - python-dateutil >=2.5
+    - psutil >=5.9.3
+    - certifi >=2024.7.4
+    - urllib3 >=1.25,<2.8.0
+    - pyreadline3 ==3.5.6  # [win]
+    - colorama >=0.4.4,<=0.4.6  # [win]
+    - crc32c >=2.7.1
+    - awscrt >=0.23.4
+
+test:
+  imports:
+    - dxpy
+    - dxpy.bindings
+    - dxpy.cli
+    - dxpy.packages
+    - dxpy.scripts
+    - dxpy.templating
+    - dxpy.utils
+  commands:
+    - dx-build-applet --help
+    - dx-build-app --help
+    - dx --help
+    - dx-app-wizard --help
+  requires:
+    - mock >=2.0.0
+    - pexpect >=4.6
+    - pyopenssl >=17.5.0
+    - pytest >=4.6.9
+    - pytest-timeout >=1.3.4
+    - pytest-xdist >=1.31.0
+
+about:
+  home: "https://github.com/dnanexus/dx-toolkit"
+  license: "Apache-2.0"
+  license_family: APACHE
+  license_file: copyright
+  summary: "DNAnexus Platform API bindings for Python."
+  doc_url: "https://documentation.dnanexus.com"
+  dev_url: "https://github.com/dnanexus/dx-toolkit"
+
+extra:
+  recipe-maintainers:
+    - notestaff

@@ -1,0 +1,45 @@
+{% set name = "multiz" %}
+{% set version = "11.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name|lower, max_pin="x.x") }}
+
+source:
+  url: https://github.com/multiz/multiz/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 2b0be753ad94e95c1a75c1f552c05eb57925e01f290563f6b9d134e444333d35
+
+requirements:
+  build:
+    - make
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+  host:
+  run:
+    - coreutils
+    - grep
+
+test:
+  commands:
+    - multiz 2>&1 | grep -qF 'multiz.v{{ version }}'
+    - tba 2>&1 | grep -qF 'tba.v16'
+    - roast 2>&1 | grep -qF 'roast.v5'
+
+about:
+  home: http://www.bx.psu.edu/miller_lab/
+  license: MIT
+  summary: DNA multiple sequence aligner from Penn State's Miller lab.
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:multiz
+    - biotools:tba
+    - biotools:roast

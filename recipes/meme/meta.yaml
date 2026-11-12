@@ -1,52 +1,91 @@
-about:
-    home: http://alternate.meme-suite.org/
-    license: Custom
-    license_file: COPYING
-    summary: Motif based sequence Analysis tools
+{% set name = "MEME" %}
+{% set version = "5.5.9" %}
+{% set sha256 = "0406fb7b1dc27f6aab3d6d3a29ecdf617bbdd946690cfa97ca2129bc210bfd12" %}
 
 package:
-    name: meme
-    version: 4.11.1
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://meme-suite.org/meme/meme-software/{{ version }}/meme-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-    number: 1
-    skip: True  # [osx]
-    detect_binary_files_with_prefix: True
+  number: 1
+  run_exports:
+    - {{ pin_subpackage("meme", max_pin="x") }}
 
 requirements:
-    build:
-        - gcc
-        - yaml
-        - python >=2.7,<3
-        - perl
-        - ghostscript   #[linux]
-        - zlib
-        - libxslt
-        - libxml2
-        - expat
-        - perl-xml-parser #[linux]
-        - perl-app-cpanminus
-    run:
-        - gcc
-        - yaml
-        - expat
-        - python
-        - perl
-        - zlib
-        - libxslt
-        - libxml2
-        - ghostscript   #[linux]
-        - perl-xml-parser #[linux]
-source:
-    fn: meme_4.11.1.tar.gz
-    url: http://alternate.meme-suite.org/meme-software/4.11.1/meme_4.11.1.tar.gz
-    md5: 8d04213c4feddf31d4f620060fdc6b97
-    patches:
-        - mast.patch
-
+  build:
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+    - make
+    - autoconf
+    - automake
+    - libtool
+    - pkg-config
+  host:
+    - libgomp  # [linux]
+    - llvm-openmp  # [osx]
+    - icu
+    - ghostscript
+    - zlib
+    - libxslt
+    - libxml2
+    - expat
+    - perl
+  run:
+    - python >=3.7
+    - libgomp  # [linux]
+    - llvm-openmp  # [osx]
+    - perl
+    - perl-app-cpanminus
+    - perl-module-build
+    - perl-yaml
+    - perl-cgi
+    - perl-math-cdf
+    - perl-log-log4perl
+    - perl-xml-simple
+    - perl-xml-parser
+    - perl-file-which
+    - perl-html-parser
+    - perl-html-template
+    - perl-html-tree
+    - perl-json
+    - perl-sys-info
 
 test:
-    commands:
-        - "meme -h 2>&1 | grep fraction > /dev/null"
-        - "meme-chip 2>&1 | grep FIMO > /dev/null"
-        - "centrimo 2>&1 | grep maxreg > /dev/null"
+  commands:
+    - meme -version
+    - streme -version
+    - xstreme -version
+    - meme-chip -version
+    - glam2 -version
+    - tomtom -version
+    - centrimo -version
+    - ame 2>&1 | grep -i usage
+    - spamo -version
+    - gomo -version
+    - fimo -version
+    - mast -version
+    - mcast -version
+    - glam2scan -version
+    - momo simple -version
+    - getsize -version
+    - dreme -version
+
+about:
+  home: "https://meme-suite.org"
+  license: Custom
+  license_file: COPYING
+  summary: "Motif-based sequence analysis tools."
+  doc_url: "https://meme-suite.org/meme/doc/overview.html"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:meme_suite
+    - usegalaxy-eu:meme_dreme
+    - doi:10.1093/nar/gkv416

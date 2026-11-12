@@ -1,45 +1,80 @@
+{% set name = "htseq" %}
+{% set version = "2.1.2" %}
+{% set sha256 = "69d5a6b9a832ea85edf8a32fbac591a8af2e32bb961d1f3843c48c9d03a77a82" %}
+
 package:
-  name: htseq
-  version: "0.6.1.post1"
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  fn: HTSeq-0.6.1p1.tar.gz
-  url: https://pypi.python.org/packages/source/H/HTSeq/HTSeq-0.6.1p1.tar.gz
-  md5: c44d7b256281a8a53b6fe5beaeddd31c
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
 
 build:
-  preserve_egg_dir: True
-  number: 1
-  skip: True # [not py27]
+  number: 3
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv
+  entry_points:
+    - htseq-qa = HTSeq.scripts.qa:main
+    - htseq-count = HTSeq.scripts.count:main
+    - htseq-count-barcodes = HTSeq.scripts.count_with_barcodes:main
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
 
 requirements:
   build:
+    - {{ stdlib('c') }}
+    - {{ compiler('cxx') }}
+  host:
     - python
-    - setuptools
+    - pip
+    - cython
+    - setuptools >=74.1
     - numpy
-
+    - pysam
+    - swig >=3.0.8
   run:
     - python
+    - matplotlib-base
     - numpy
-    - setuptools
-    - matplotlib
     - pysam
+    - pandas
+    - scipy
+    - anndata
+    - loompy
 
 test:
-  # Python imports
   imports:
     - HTSeq._HTSeq_internal
     - HTSeq.StepVector
-    - HTSeq._version
+    - HTSeq.StretchVector
     - HTSeq.scripts.qa
     - HTSeq.scripts.count
-
-
+    - HTSeq.scripts.count_with_barcodes
+    - HTSeq.scripts.utils
+    - HTSeq.features
+    - HTSeq.scripts.count_features.count_features_per_file
+    - HTSeq.scripts.count_features.reads_io_processor
+    - HTSeq.scripts.count_features.reads_stats
   commands:
     - htseq-count -h
     - htseq-qa -h
+    - htseq-count-barcodes -h
 
 about:
-  home: http://www-huber.embl.de/users/anders/HTSeq/
-  license:  GNU General Public License (GPL)
-  summary: 'A framework to process and analyze data from high-throughput sequencing (HTS) assays'
+  home: "https://github.com/htseq/htseq"
+  license: "GPL-3.0-only"
+  license_family: GPL3
+  license_file: LICENSE
+  summary: "HTSeq is a Python library to facilitate processing and analysis of data from high-throughput sequencing (HTS) experiments."
+  dev_url: "https://github.com/htseq/htseq"
+  doc_url: "https://htseq.readthedocs.io/en/latest"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:htseq
+    - usegalaxy-eu:htseq_count
+    - doi:10.1093/bioinformatics/btu638
+    - doi:10.1093/bioinformatics/btac166

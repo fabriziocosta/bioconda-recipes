@@ -1,27 +1,45 @@
+{% set version = "3.22.0" %}
+{% set name = "GO.db" %}
+{% set bioc = "3.22" %}
+
 package:
-  name: bioconductor-go.db
-  version: 3.3.0
+  name: bioconductor-{{ name|lower }}
+  version: '{{ version }}'
 source:
-  fn: GO.db_3.3.0.tar.gz
-  url: http://bioconductor.org/packages/release/data/annotation/src/contrib/GO.db_3.3.0.tar.gz
-  md5: 4214f5dfadcb2964173011b0e46d332b
+  url:
+    - https://bioconductor.org/packages/{{ bioc }}/data/annotation/src/contrib/{{ name }}_{{ version }}.tar.gz
+    - https://bioconductor.org/packages/{{ bioc }}/bioc/src/contrib/Archive/{{ name }}/{{ name }}_{{ version }}.tar.gz
+    - https://bioarchive.galaxyproject.org/{{ name }}_{{ version }}.tar.gz
+    - https://depot.galaxyproject.org/software/bioconductor-{{ name|lower }}/bioconductor-{{ name|lower }}_{{ version }}_src_all.tar.gz
+  md5: 5ae5557afa56227c4c9c145907b1f585
 build:
   number: 0
   rpaths:
     - lib/R/lib/
     - lib/
+  run_exports: '{{ pin_subpackage("bioconductor-go.db", max_pin="x.x") }}'
+  noarch: generic
+# Suggests: DBI
 requirements:
-  build:
-    - 'bioconductor-annotationdbi >=1.33.10'
-    - r
+  host:
+    - bioconductor-annotationdbi >=1.72.0,<1.73.0
+    - r-base
   run:
-    - 'bioconductor-annotationdbi >=1.33.10'
-    - r
+    - bioconductor-annotationdbi >=1.72.0,<1.73.0
+    - r-base
+    - curl
+    - bioconductor-data-packages >=20260207
 test:
   commands:
-    - '$R -e "library(''GO.db'')"'
+    - $R -e "library('{{ name }}')"
 about:
-  home: http://bioconductor.org/packages/release/data/annotation/html/GO.db.html
+  home: https://bioconductor.org/packages/{{ bioc }}/data/annotation/html/{{ name }}.html
   license: Artistic-2.0
-  summary: 'A set of annotation maps describing the entire Gene Ontology assembled
-    using data from GO'
+  summary: A set of annotation maps describing the entire Gene Ontology
+  description: A set of annotation maps describing the entire Gene Ontology assembled using data from GO
+extra:
+  parent_recipe:
+    name: bioconductor-go.db
+    path: recipes/bioconductor-go.db
+    version: 3.6.0
+

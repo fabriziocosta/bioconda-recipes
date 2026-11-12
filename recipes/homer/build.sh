@@ -1,35 +1,40 @@
-#! /bin/bash
+#!/bin/bash
 
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
+export CXXFLAGS="${CXXFLAGS} -O3"
+export outdir="$PREFIX/share/$PKG_NAME"
 
-outdir=$PREFIX/share/$PKG_NAME-$PKG_VERSION-$PKG_BUILDNUM
-mkdir -p $outdir
-mkdir -p $outdir/bin
-mkdir -p $PREFIX/bin
-chmod +x configureHomer.pl
-cp configureHomer.pl $outdir/
+mkdir -p "$outdir"
+mkdir -p "$outdir/bin"
+mkdir -p "$PREFIX/bin"
 
-perl $outdir/configureHomer.pl -install
+case $(uname -m) in
+    aarch64)
+	export CXXFLAGS="${CXXFLAGS} -march=armv8-a"
+	;;
+    arm64)
+	export CXXFLAGS="${CXXFLAGS} -march=armv8.4-a"
+	;;
+    x86_64)
+	export CXXFLAGS="${CXXFLAGS} -march=x86-64-v3"
+	;;
+esac
 
-# Note that homer cannot be built as a package since the installation
-# script *hard-codes* the paths in the perl scripts. Nevertheless,
-# create symlinks to $outdir/bin as this is where configureHomer.pl
-# -install will put the binaries
+ln -s ${CC} $BUILD_PREFIX/bin/gcc
+ln -s ${CXX} $BUILD_PREFIX/bin/g++
 
-# For all binaries, wrap configureHomer.pl; not the ideal way to go
+sed -i.bak 's|-C "$homeDir/cpp/"|-C "$homeDir/cpp/" COMPILER=CXX|' configureHomer.pl
+sed -i.bak "s|COMPILER=CXX|COMPILER=${CXX}|" configureHomer.pl
+rm -f *.bak
+
+chmod +rwx configureHomer.pl
+cp -f configureHomer.pl $outdir/
+
+( cd $outdir && perl configureHomer.pl -keepScript -install )
+
 ls -1 $outdir/bin/ | grep -v old | sed -e "s/\*/ \\\/g" | while read id;
 do
-    chmod +x $outdir/bin/$id;
-    ln -s $outdir/bin/$id $PREFIX/bin/$id;
+	chmod +x $outdir/bin/$id;
+	ln -s $outdir/bin/$id $PREFIX/bin/$id;
 done
-
-chmod +x $outdir/configureHomer.pl
-ln -s $outdir/configureHomer.pl $PREFIX/bin/configureHomer.pl 
-
-# Add helper script to configureHomer.pl so that configureHomer.pl
-# -install really installs in $outdir
-#configureHomer=$PREFIX/bin/configureHomer.pl
-#echo "#! /bin/bash" > $configureHomer;
-#echo 'DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )' >>  $configureHomer;
-#echo '$DIR/../share/'$PKG_NAME-$PKG_VERSION-$PKG_BUILDNUM/configureHomer.pl '$@' >> $configureHomer;
-#chmod +x $configureHomer;
-

@@ -1,32 +1,45 @@
-{% set version = "1.3.1" %}
+{% set version = "1.25" %}
 
 package:
   name: samtools
   version: {{ version }}
 
 build:
-  number: 4
-  skip: False
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("samtools", max_pin="x") }}
 
 source:
-  fn: samtools-{{ version }}.tar.bz2
   url: https://github.com/samtools/samtools/releases/download/{{ version }}/samtools-{{ version }}.tar.bz2
-  md5: a7471aa5a1eb7fc9cc4c6491d73c2d88
+  sha256: 8bbd2b3cb447953149a74ab0b00e3ec4e88a789a27b8373a31fa6b5b2dee02b1
 
 requirements:
   build:
-  - ncurses {{CONDA_NCURSES}}*
-  - zlib
-  - curl
-  run:
-  - ncurses {{CONDA_NCURSES}}*
-  - zlib
-  - curl
+    - make
+    - {{ compiler('c') }} 
+    - {{ stdlib('c') }}
+  host:
+    - htslib
+    - ncurses
+    - zlib
+    - libxcrypt
 
 about:
   home: https://github.com/samtools/samtools
   license: MIT
+  license_file: LICENSE
   summary: Tools for dealing with SAM, BAM and CRAM files
+
 test:
   commands:
     - samtools --help
+    # test if https protocol works, if it doesn't samtools will fail with "Protocol not supported"
+    - samtools view https://htslib.org/ 2>&1 | grep -q 'fail to read the header'
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:samtools
+    - usegalaxy-eu:samtools_flagstat

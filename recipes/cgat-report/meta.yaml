@@ -1,51 +1,53 @@
 
 package:
   name: cgat-report
-  version: 0.3.7
+  version: 0.9.1
 
 source:
-  fn: CGATReport-0.3.7.tar.gz
-  url: https://pypi.python.org/packages/source/C/CGATReport/CGATReport-0.3.7.tar.gz
-  md5: 7d9a2b51226ffd35d84f77f4606ddcb4
+  url: https://files.pythonhosted.org/packages/ad/8e/6342c5688bb24fb49371445ae8607bf27988ff20a539998b1fc5aa45cfc6/CGATReport-0.9.1.tar.gz
+  sha256: 4f839815e9261241b79b4048355e9b391c9d038873bb0adaacaf35292d5b49c8
 
 build:
-  skip: True # [not py27]
-  number: 1
+  noarch: python
+  number: 0
 
 requirements:
-  build:
+  host:
+    - docutils
+    - future
+    - nose
+    - six
+    - sphinx
     - python
-    - setuptools
-    - matplotlib-venn
-    - seaborn
-    - ggplot
-    - sphinxcontrib-programoutput
-    - sqlalchemy
-    - web.py
-    - openpyxl
-    - xlwt
-    - mpld3
-    - pillow
+    - pep8
 
   run:
+    - bokeh
+    - docutils
+    - future
+    - matplotlib-base >=2.0
+    - nose
+    - numpy
+    - pandas
+    - scipy
+    - seaborn
+    - six
+    - sphinx
+    - sqlalchemy
     - python
     - matplotlib-venn
     - seaborn
-    - ggplot
-    - sphinxcontrib-programoutput
+    # - ggplot
+    # - sphinxcontrib-programoutput
     - sqlalchemy
-    - web.py
     - openpyxl
-    - xlwt
-    - mpld3
     - pillow
 
 test:
   commands:
-    - cgatreport-test -h
+    - cgatreport-clean -h
 
 about:
   home: https://github.com/AndreasHeger/CGATReport
   license: BSD
   summary: "A report generator in python based on sphinx"
-

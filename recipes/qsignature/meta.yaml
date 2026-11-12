@@ -3,16 +3,19 @@ package:
   version: '0.1pre'
 
 source:
-  fn: qsignature-0.1pre.tar.bz2
   url: http://downloads.sourceforge.net/project/adamajava/qsignature.tar.bz2
+  md5: 32c168b5ac414af099bcf8cf98a0d073
 
 build:
-  number: 2
+  run_exports:
+    - {{ pin_subpackage('qsignature', max_pin="x.x") }}
+  number: 6
   skip: False
+  noarch: generic
 
 requirements:
   run:
-    - java-jdk
+    - openjdk
 
 test:
   commands:
@@ -20,5 +23,5 @@ test:
 
 about:
   home: http://sourceforge.net/p/adamajava/wiki/Home/
-  license: GPLv3
+  license: GPL-3.0-only
   summary: qsignature is a simple and highly effective method for detecting potential sample mix-ups using distance measurements between SNP

@@ -1,0 +1,55 @@
+{% set name = "bgen-cpp" %}
+{% set version = "1.2.0" %}
+{% set sha256 = "6935a8c9694caaa195b1ea361b566526ca6f263e39a6b2dc841188a374017719" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: https://github.com/jpfeuffer/bgen/archive/refs/tags/v{{version}}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('bgen-cpp', max_pin="x") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
+    - cmake
+    - ninja
+  host:
+    - zlib
+    - boost-cpp
+    - zstd
+    - sqlite
+    - aws-sdk-cpp
+  run:
+    - boost-cpp
+
+test:
+  commands:
+    - bgenix -help
+    - cat-bgen -help
+    - edit-bgen -help
+
+about:
+  home: https://enkre.net/cgi-bin/code/bgen/
+  license: Boost Software License
+  summary: 'Reference implementation of the BGEN format, written in C++'
+  description: |
+    Reference implementation of the BGEN format, written in C++.
+    The library can be used as the basis for BGEN support
+    in other software, or as a reference for developers
+    writing their own implementations of the BGEN format.
+    Includes applications for working with BGEN files: bgenix,
+    cat-bgen, and edit-bgen.
+
+extra:
+  additional-platforms:
+    - osx-arm64
+    - linux-aarch64

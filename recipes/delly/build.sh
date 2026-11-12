@@ -1,3 +1,3 @@
-mkdir -p $PREFIX/bin
-cp ${SRC_DIR}/delly_v0.7.6_CentOS5.4_x86_64bit $PREFIX/bin/delly
-chmod 0755 ${PREFIX}/bin/delly
+#!/bin/bash
+
+CXXFLAGS="${CXXFLAGS} -O3 -D__STDC_FORMAT_MACROS -I${PREFIX}/include -std=c++17" LDFLAGS="${LDFLAGS} -L${PREFIX}/lib -pthread" make -j${CPU_COUNT} CXX="${CXX}" prefix="${PREFIX}" install

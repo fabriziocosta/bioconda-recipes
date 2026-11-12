@@ -1,21 +1,40 @@
-#!/bin/sh
-
+#!/bin/bash
 set -x -e
 
-export CC=${PREFIX}/bin/gcc
-export CXX=${PREFIX}/bin/g++
+export INCLUDES="-I${PREFIX}/include"
+export LIBPATH="-L${PREFIX}/lib"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export CXXFLAGS="${CXXFLAGS} -O3 -Wno-unused-but-set-variable -Wno-vla-cxx-extension -Wno-sizeof-pointer-div"
+export LC_ALL="en_US.UTF-8"
+export PYTHONPATH="${SP_DIR}"
+export PYTHON_NOVERSION_CHECK="${PY_VER}"
 
-export INCLUDE_PATH="${PREFIX}/include"
-export LIBRARY_PATH="${PREFIX}/lib"
-export LD_LIBRARY_PATH="${PREFIX}/lib"
-export BOOST_INCLUDE_DIR=${PREFIX}/include
-export BOOST_LIBRARY_DIR=${PREFIX}/lib
-export LIBS='-lboost_system -lboost_program_options -lboost_filesystem -lboost_timer'
+mkdir -p ${PREFIX}/bin
 
-export CXXFLAGS="-DUSE_BOOST -I${BOOST_INCLUDE_DIR} -L${BOOST_LIBRARY_DIR}"
-export LDFLAGS="-L${BOOST_LIBRARY_DIR} -lboost_filesystem -lboost_system"
+# https://stackoverflow.com/questions/22401500/autoconf-error-possibly-undefined-macro-ac-libobj
+cd deps/jellyfish-2.2.0 && aclocal && cd ../../
 
-./autogen.sh
-./configure --prefix=$PREFIX --with-boost=${PREFIX}
-make
+#importing matplotlib fails, likely due to X
+sed -i.bak "124d" configure.ac
+sed -i.bak 's|'3.5'|'3.10'|' configure.ac
+rm -rf *.bak
+
+OS=$(uname -s)
+ARCH=$(uname -m)
+
+if [[ "${OS}" == "Linux" ]]; then
+  export CXXFLAGS="${CXXFLAGS} -Wno-catch-value"
+fi
+
+autoreconf -if
+./configure --prefix="${PREFIX}" CC="${CC}" CXX="${CXX}" \
+  CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}" CPPFLAGS="${CPPFLAGS}" \
+  PYTHON="${PYTHON}" PYTHON_VERSION="${PY_VER}" LIBS="-lz -lboost_program_options -lboost_filesystem -lboost_timer" \
+  --enable-silent-rules --disable-dependency-tracking --disable-option-checking
+
+make -j"${CPU_COUNT}"
 make install
+
+# This directory isn't needed and confuses conda
+rm -rf $PREFIX/mkspecs

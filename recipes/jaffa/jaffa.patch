@@ -1,0 +1,22 @@
+diff --git a/JAFFA_stages.groovy b/JAFFA_stages.groovy
+index f56ec4a..e0d298e 100755
+--- a/JAFFA_stages.groovy
++++ b/JAFFA_stages.groovy
+@@ -13,14 +13,14 @@ load codeBase+"/tools.groovy"
+ 
+ /******** Path to reference files ********/
+ // leave if references are in the Jaffa folder
+-refBase = codeBase
++// refBase = codeBase
+ 
+ // Path to reference files that are elsewhere on the file system
+ // refBase = "/path/to/reference/directory"
+ 
+ // Path to reference files 
+-// env = System.getenv()
+-// refBase = env['GENOMES']
++env = System.getenv()
++refBase = env['JAFFA_REF_BASE']
+ 
+ // Should there be a folder structure for the reference files within the reference folder then
+ // the below variables will allow for this flexibility

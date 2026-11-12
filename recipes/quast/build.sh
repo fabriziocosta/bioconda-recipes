@@ -1,20 +1,10 @@
 #!/bin/bash
 
+export C_INCLUDE_PATH=$PREFIX/include
 export INCLUDE_PATH="${PREFIX}/include"
 export LIBRARY_PATH="${PREFIX}/lib"
-export LD_LIBRARY_PATH="${PREFIX}/lib"
-export BOOST_INCLUDE_DIR=${PREFIX}/include
-export BOOST_LIBRARY_DIR=${PREFIX}/lib
-
-export CXXFLAGS="-DUSE_BOOST -I${BOOST_INCLUDE_DIR} -L${BOOST_LIBRARY_DIR}"
-export LDFLAGS="-L${BOOST_LIBRARY_DIR}"
-export CFLAGS="-DUSE_BOOST -I${BOOST_INCLUDE_DIR} -L${BOOST_LIBRARY_DIR}"
-
-
-sed -i 's|^CXXFLAGS.*||' libs/E-MEM-linux/Makefile
-sed -i 's|^CFLAGS.*||' libs/E-MEM-linux/Makefile
-sed -i 's|^LDFLAGS.*||' libs/E-MEM-linux/Makefile
-
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
 
 BINARY_HOME=$PREFIX/bin
 QUAST_HOME=$PREFIX/opt/quast-$PKG_VERSION
@@ -22,15 +12,39 @@ QUAST_HOME=$PREFIX/opt/quast-$PKG_VERSION
 mkdir -p $BINARY_HOME
 mkdir -p $QUAST_HOME
 
-cp -R $SRC_DIR/* $QUAST_HOME
+rm -rf $SRC_DIR/quast_libs/site_packages/joblib*
+rm -rf $SRC_DIR/quast_libs/site_packages/simplejson
 
-make CFLAGS="-Wall -Wextra -Wunused -mpopcnt -std=gnu++0x -fopenmp -I${PREFIX}/include" -C $PREFIX/opt/quast-4.1/libs/MUMmer3.23-linux
+sed -i.bak 's/CC=/#CC=/' $SRC_DIR/quast_libs/bwa/Makefile
+sed -i.bak 's/INCLUDES=/#INCLUDES=/' $SRC_DIR/quast_libs/bwa/Makefile
+sed -i.bak 's/CFLAGS=/CFLAGS+= -fcommon/' $SRC_DIR/quast_libs/bwa/Makefile
 
-make CFLAGS="-Wall -Wextra -Wunused -mpopcnt -std=gnu++0x -fopenmp -I${PREFIX}/include" -C $PREFIX/opt/quast-4.1/libs/E-MEM-linux
+sed -i.bak 's/export CXX\s/#export CXX/' $SRC_DIR/quast_libs/bedtools/Makefile
+sed -i.bak 's/CXXFLAGS =/CXXFLAGS +=/' $SRC_DIR/quast_libs/bedtools/Makefile
+
+# Fails on OSX
+#pushd $SRC_DIR/quast_libs/bedtools/
+#make
+#cp ./bin/* ${PREFIX}/bin
+#popd
+
+$PYTHON -m pip install . --no-build-isolation --no-deps --no-cache-dir -vvv
+
+tail -n50 $SRC_DIR/quast_libs/*/make.* || true
+
+cp -R $SRC_DIR/*quast*.py $QUAST_HOME/
+cp -R $SRC_DIR/icarus.py $QUAST_HOME/
+
+lib_path=`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`
+
+ln -sf $lib_path/quast_libs $QUAST_HOME/quast_libs
 
 #Linking to binfolder
 chmod +x $QUAST_HOME/quast.py
-ln -s "$QUAST_HOME/quast.py" "$BINARY_HOME/quast"
+ln -sf "$QUAST_HOME/quast.py" "$BINARY_HOME/quast"
 
 chmod +x $QUAST_HOME/metaquast.py
-ln -s "$QUAST_HOME/metaquast.py" "$BINARY_HOME/metaquast"
+ln -sf "$QUAST_HOME/metaquast.py" "$BINARY_HOME/metaquast"
+
+cp -rf $RECIPE_DIR/quast-download-* $PREFIX/bin
+chmod +x $PREFIX/bin/quast-download-*

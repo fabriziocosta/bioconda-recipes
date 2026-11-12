@@ -1,28 +1,55 @@
+{% set name = "rseqc" %}
+{% set version = "5.0.6" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/rseqc-{{ version }}.tar.gz
+  sha256: b361a45ef4a9bb90e926d19abc7801b840897ccad4627f41750972d8cf18cad7
+
 build:
   number: 0
-  skip: True # [osx]
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x") }}
+
+requirements:
+  host:
+    - python >=3.9
+    - pip
+    - setuptools <82
+  run:
+    - python >=3.9
+    - setuptools <82
+    - r-base  # Rscript is an undeclared runtime dependency of a number of the rseqc scripts: https://github.com/snakemake-workflows/rna-seq-star-deseq2/pull/91#issuecomment-3253583847
+    - bx-python
+    - numpy
+    - pybigwig
+    - pysam
+    - logomaker
+
+test:
+  imports:
+    - qcmodule
+    - qcmodule.SAM
+  commands:
+    #- read_distribution.py 2>&1 | grep Usage > /dev/null
+    #- geneBody_coverage.py 2>&1 | grep Usage > /dev/null
+    - Rscript --help
 
 about:
-  home: http://rseqc.sourceforge.net/
-  license: GPLv3
-  summary: RSEQC - An RNA-seq Quality Control Package
-package:
-  name: rseqc
-  version: 2.6.2
-requirements:
-  build:
-    - python >=2.7,<3
-    - numpy
-  run:
-    - python >=2.7,<3
-    - numpy
-test:
-  requires:
-    - python >=2.7,<3
-    - numpy
-  commands:
-    - read_distribution.py 2>&1 | grep Usage > /dev/null
-source:
-  fn: RSeQC-2.6.2.tar.gz
-  url: http://downloads.sourceforge.net/project/rseqc/RSeQC-2.6.2.tar.gz
-  md5: 4e7fcfed2f4f7cff63ff852e150d80d9
+  home: "https://rseqc.sourceforge.net"
+  license: "GPL-3.0-or-later"
+  summary: "Quality control package for RNA-seq data."
+  license_family: GPL3
+  license_file: LICENSE
+  dev_url: "https://rseqc.sourceforge.net"
+  doc_url: "https://rseqc.sourceforge.net/#usage-information"
+
+extra:
+  identifiers:
+    - biotools:rseqc
+    - doi:10.1093/bioinformatics/bts356

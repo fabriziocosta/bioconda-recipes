@@ -1,0 +1,52 @@
+{% set name = "methplotlib" %}
+{% set version = "1.0.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f25f2874706f8221d499b9f30c9fc5973a557ab0eacf8165842b01376975cdad
+
+build:
+  number: 0
+  entry_points:
+    - methplotlib=methplotlib.methplotlib:main
+  script: "{{ PYTHON }} -m pip install . --no-deps --no-build-isolation --no-cache-dir -vvv"
+  noarch: python
+  run_exports:
+    - {{ pin_subpackage('methplotlib', max_pin="x.x") }}
+
+requirements:
+  host:
+    - python >=3.9
+    - pip
+    - setuptools
+  run:
+    - python >=3.9
+    - numpy >=1.14.3
+    - pandas >=0.23.4
+    - plotly >=4.9.0
+    - pyranges >=0.0.77
+    - fisher >=0.1.9
+    - scikit-learn
+    - pyfaidx
+    - biopython
+    - pysam
+
+test:
+  imports:
+    - methplotlib
+  commands:
+    - methplotlib --help
+
+about:
+  home: https://github.com/wdecoster/methplotlib
+  license: MIT
+  license_family: MIT
+  summary: Plot nucleotide modification data from nanopore sequencing
+
+extra:
+  recipe-maintainers:
+    - wdecoster

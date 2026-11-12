@@ -1,6 +1,19 @@
 #!/bin/bash
 
-CPPFLAGS="-I$PREFIX/include $CPPFLAGS" LDFLAGS="-L$PREFIX/lib $LDFLAGS" ./configure --prefix=$PREFIX
-make
-make install
+export CPATH="${PREFIX}/include"
+export LDFLAGS="${LDFLAGS} -L$PREFIX/lib"
+export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include"
+export CFLAGS="${CFLAGS} -O3"
+export CXXFLAGS="${CXXFLAGS} -O3 -std=c++14 -Wno-deprecated-declarations"
 
+cp -f ${BUILD_PREFIX}/share/gnuconfig/config.* .
+
+autoreconf -if
+./configure --prefix="${PREFIX}" \
+	--disable-option-checking --enable-silent-rules \
+	--disable-dependency-tracking CC="${CC}" CXX="${CXX}" \
+	CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" \
+	CPPFLAGS="${CPPFLAGS}" LDFLAGS="${LDFLAGS}"
+
+make -j"${CPU_COUNT}"
+make install

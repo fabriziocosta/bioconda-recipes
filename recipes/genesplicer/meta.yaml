@@ -1,21 +1,38 @@
 package:
   name: genesplicer
-  version: "1.0"
-build:
-  number: 1
-  skip: True # [osx]
+  version: "0_2003.04.03"
+
 source:
-  fn: "GeneSplicer.tar.gz"
-  url: "http://www.cs.jhu.edu/~genomics/GeneSplicer/GeneSplicer.tar.gz"
+  url:
+    - https://depot.galaxyproject.org/software/genesplicer/genesplicer_0_2003.04.03_src_all.tar.gz
+    - http://www.cs.jhu.edu/~genomics/GeneSplicer/GeneSplicer.tar.gz
+    - ftp://ftp.ccb.jhu.edu/pub/software/genesplicer/GeneSplicer.tar.gz
+  sha256: aa5beae2257d9ef044dd6793c024772a9b3a8bd06edcd1751c9ccaabbc46068a
+
+build:
+  number: 8
+  run_exports:
+    - {{ pin_subpackage('genesplicer', max_pin=None) }}
+
 requirements:
   build:
-    - gcc
-  run:
-    - libgcc
+    - make
+    - {{ compiler('cxx') }}
+    - pkg-config
+
 test:
   commands:
     - genesplicer
+
 about:
-  home: "http://www.cs.jhu.edu/~genomics/GeneSplicer"
+  home: "https://ccb.jhu.edu/software/genesplicer"
   license: "OSI"
-  summary: "GeneSplicer : A computational method for splice site prediction"
+  summary: "GeneSplicer : A computational method for splice site prediction."
+  doc_url: "https://ccb.jhu.edu/software/genesplicer"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:genesplicer

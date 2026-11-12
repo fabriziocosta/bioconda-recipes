@@ -1,0 +1,57 @@
+{% set name = 'beast2' %}
+{% set version = '2.7.7' %}
+{% set hash = 'a866f3e5da4ef890a042f01849e32322aa0a8e16e3e1cb2c59f823de2611781a' %}
+{% set folder = 'beast' %}
+
+package:
+  name: '{{ name }}'
+  version: '{{ version }}'
+
+source:
+  url: https://github.com/CompEvol/beast2/releases/download/v{{ version }}/BEAST.v{{ version }}.Linux.x86.tgz
+  sha256: '{{ hash }}'
+  folder: '{{ folder }}'
+  # The patches adjust the below run scripts to set BEAGLE_LIB to point to the location in conda with beagle libraries
+  patches:
+    - beast.patch
+    - applauncher.patch
+    - loganalyser.patch
+
+build:
+  number: 0
+  noarch: generic
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
+requirements:
+  host:
+    - beagle-lib
+    - fontconfig
+    - font-ttf-ubuntu
+    - freetype
+    - xorg-libxtst
+
+  run:
+    - beagle-lib
+    - fontconfig
+    - font-ttf-ubuntu
+    - freetype
+    - xorg-libxtst
+
+test:
+  commands:
+    - beast -version
+    # check to make sure beagle-lib is loaded ok
+    - beast -beagle_info \| grep Flags
+    - applauncher -help
+    - packagemanager -help
+    - loganalyser -h
+    - logcombiner -help
+    - treeannotator -help
+
+about:
+  home: http://www.beast2.org
+  license: LGPL-2.1-or-later
+  license_file: '{{ folder }}/LICENSE.txt'
+  summary: "BEAST 2 is a cross-platform program for Bayesian phylogenetic analysis of molecular sequences."
+  dev_url: https://github.com/CompEvol/beast2

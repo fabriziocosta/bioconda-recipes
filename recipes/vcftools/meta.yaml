@@ -1,35 +1,53 @@
+{% set name = "vcftools" %}
+{% set version = "0.1.17" %}
+{% set sha256 = "00b54fc7349179c2efbdab0e4dcb65a69e7b0ab0d0d29b59cc823140d0b40bff" %}
+
 package:
-  name: vcftools
-  version: '0.1.14'
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  fn: vcftools-0.1.14.tar.gz
-  url: https://github.com/vcftools/vcftools/releases/download/v0.1.14/vcftools-0.1.14.tar.gz
-  md5: a110662535651caa6cc8c876216a9f77
+  url: https://github.com/vcftools/vcftools/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - patch
 
 build:
-  number: 4
+  number: 0
+  run_exports:
+     - {{ pin_subpackage('vcftools', max_pin='x.x') }}
 
 requirements:
   build:
-    - gcc  # [not osx]
-    - llvm  # [osx]
+    - {{ compiler('cxx') }}
+    - make
+    - autoconf
+    - automake
+    - libtool
+    - pkg-config
+  host:
     - zlib
-    - perl-threaded
-    - perl-vcftools-vcf ==0.953
-
+    - perl
   run:
-    - libgcc  # [not osx]
-    - zlib
-    - perl-threaded
-    - perl-vcftools-vcf ==0.953
+    - perl
 
 test:
   commands:
     - vcftools -h
-    #- vcf-isec -h  # outputs to stderr, can't use this as a test.
 
 about:
-  home: https://vcftools.github.io/
-  license: LGPL
-  summary: A set of tools written in Perl and C++ for working with VCF files.
+  home: "https://github.com/vcftools/vcftools"
+  license: LGPL-3.0-only
+  license_family: LGPL
+  license_file: LICENSE
+  summary: "A set of tools written in Perl and C++ for working with VCF files."
+  dev_url: "https://github.com/vcftools/vcftools"
+  doc_url: "https://vcftools.github.io"
+
+extra:
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  identifiers:
+    - biotools:vcftools
+    - doi:10.1093/bioinformatics/btr330

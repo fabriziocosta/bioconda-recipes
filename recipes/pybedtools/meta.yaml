@@ -1,41 +1,54 @@
+{% set name = "pybedtools" %}
+{% set version = "0.12.1" %}
+
 package:
-  name: pybedtools
-  version: '0.7.8'
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  url: https://pypi.python.org/packages/2d/ee/aa19e50e03e06c817d00eadf8b56824b9e473da8c3e8ca3b33a11717ee6f/pybedtools-0.7.8.tar.gz
-  fn: pybedtools-0.7.7.tar.gz
-  md5: 966d61678f59bba85a3acd3bd48515d5
+  url: https://files.pythonhosted.org/packages/8c/0e/3b645561e25640cd5ffce29e7e1966e67b3ea49b7091910e5e2f43c203db/pybedtools-0.12.1.tar.gz
+  sha256: f459def3b430b4de6689a800d5d7b38beb313436cfb9d5e966600afca909415a
 
 build:
-  number: 1
-  skip: False
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("pybedtools", max_pin="x.x") }}
 
 requirements:
   build:
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
+  host:
     - python
-    - six
-    - pysam >=0.8.1
+    - pip
     - setuptools
-    - pandas
+    - wheel
     - cython
-    - gcc  # [linux]
-    - llvm # [osx]
     - zlib
-
   run:
     - python
-    - six
-    - pysam >=0.8.1
-    - pandas
+    - bedtools
+    - numpy
+    - pysam
 
 test:
   imports:
     - pybedtools
   commands:
-    - python -c "import pybedtools; help(pybedtools.BedTool.intersect)"
+    - python -c "import pybedtools; help(pybedtools.BedTool.intersect)" | grep "Original BEDTools help"
 
 about:
   home: https://github.com/daler/pybedtools
   license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
   summary: Wraps BEDTools for use in Python and adds many additional features.
+  dev_url: https://github.com/daler/pybedtools
+  doc_url: https://daler.github.io/pybedtools
+
+extra:
+  identifiers:
+    - biotools:pybedtools
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64

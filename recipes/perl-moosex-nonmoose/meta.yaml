@@ -1,0 +1,53 @@
+{% set name = "perl-moosex-nonmoose" %}
+{% set version = "0.27" %}
+{% set sha256 = "6fc7893b47a7db812a3c1fe8bb90d9c235143c6937251e570e27bdbd0d844ece" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/MooseX-NonMoose-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: generic
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('perl-moosex-nonmoose', max_pin="x.x") }}
+
+requirements:
+  build:
+    - make
+  host:
+    - perl
+    - perl-module-runtime
+    - perl-moose
+    - perl-extutils-makemaker
+    - perl-test-fatal
+    - perl-try-tiny
+    - perl-base
+    - perl-list-moreutils
+    - perl-test-simple
+    - perl-test2-suite
+  run:
+    - perl
+    - perl-module-runtime
+    - perl-moose
+    - perl-try-tiny
+    - perl-list-moreutils
+    - perl-scalar-list-utils
+    - perl-scalar-util-numeric
+
+test:
+  imports:
+    - MooseX::NonMoose
+    - MooseX::NonMoose::InsideOut
+    - MooseX::NonMoose::Meta::Role::Class
+    - MooseX::NonMoose::Meta::Role::Constructor
+
+about:
+  home: "https://github.com/moose/MooseX-NonMoose"
+  license: "Perl_5"
+  summary: "MooseX::NonMoose - easy subclassing of non-Moose classes."
+  doc_url: "https://github.com/moose/MooseX-NonMoose"

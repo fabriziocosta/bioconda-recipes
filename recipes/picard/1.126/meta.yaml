@@ -6,17 +6,18 @@ package:
   version: "1.126"
 
 source:
-  fn: picard-tools-1.126.zip
   url: https://github.com/broadinstitute/picard/releases/download/1.126/picard-tools-1.126.zip
   md5: e455213f6b9f46433b7d59da78c5a0fb
 
 build:
-  number: 4
-  skip: False
+  skip: true  # [not x86_64]
+  number: 6
+  run_exports:
+    - {{ pin_subpackage('picard', max_pin='x') }}
 
 requirements:
   run:
-    - java-jdk >=8
+    - openjdk >=8
 
 test:
   commands:
@@ -26,3 +27,8 @@ about:
   home: "http://broadinstitute.github.io/picard/"
   license: MIT
   summary: "Java tools for working with NGS data in the BAM format"
+
+extra:
+  skip-lints:
+    # The upstream distribution includes a precompiled Linux x86-64 shared library.
+    - should_be_noarch_generic
